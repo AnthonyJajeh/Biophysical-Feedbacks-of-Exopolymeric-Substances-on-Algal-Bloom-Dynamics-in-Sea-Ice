@@ -42,6 +42,7 @@ for i=1:n
     % for each value of A we implicitly solve for p
     avec(i) = (A_sim*c*(c_p - 1)*(A_sim*d + 1)^p + b*c_p)/((c_p - 1)*c_p);
 end
+%%%
 %two parameter a-p bifurcation plot
  figure;
  plot(avec,pvec,'LineWidth',2,'color','k')
