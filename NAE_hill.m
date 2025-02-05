@@ -22,7 +22,7 @@ IC_A = 1;
 IC_E = 1;
 IC_hill = [IC_N IC_A IC_E];
 %calculating My full model
-%eregewfw
+
 %Solving NAE-model using ode23
 [IVsol_hill, DVsol_hill] = ode23(@(t, y) DEdef_hill(t, y, a,b,c,c_p,d,p), domain, IC_hill);
 N_sol_hill = DVsol_hill(:, 1);
