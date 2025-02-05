@@ -10,11 +10,11 @@ clear all; clc; close all;
 %Parameters
 n=10;
 domain = [0 n];
-a = 3;
-c = 1.1;
-d = 1.3;
+a = 3; %Inflow of nturients
+c = 1.1; %Nutrient uptake by algae
+d = 1.3; %Growth rate of EPS due to algae
 
-EPScolordet = 1/255*[125,91,166]; % color for EPS graph
+EPScolordet = 1/255*[125,91,166]; % Color for EPS graph
 
 
 % Solving for b as a function of a,c,c_p, and d to determine the stability of equilibrium point 

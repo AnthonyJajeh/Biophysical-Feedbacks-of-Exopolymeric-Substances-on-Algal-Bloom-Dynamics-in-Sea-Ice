@@ -1,32 +1,39 @@
+%Author:Anthony Jajeh
+%Date: Febuary 5th, 2025
+% Steady state analysis of NAE-model using exponential function as
+% inflow/outflow of nutrients functions
 clear all; clc; close all;
 n=250;
 domain = [0 n];
 algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
-EPScolordet = 1/255*[125,91,166]; % color for EPS 
+EPScolordet = 1/255*[125,91,166]; % color for EPS
 
-a = 10;
-b = .1; %Range of b values for plotting
-c = .8;
-c_p = 1.3;
-d = .5;
-%creating vectors
+%Parameter values
+a = 8; %infow of nutrients
+b = .1; %outflow of nutrients
+c = .8; %Nutrient uptake by algae 
+c_p = 1.3; %algal growth rate
+d = .5; %EPS growth rate due to algae 
+
+%creating initial condition vectors
 IC_N = 15;
 IC_A = 1;
 IC_E = 1;
 IC_exp = [IC_N IC_A IC_E];
-%calculating My full model
 
+%calculating NAE-model solution plots 
 [IVsol_exp, DVsol_exp] = ode23(@(t, y) DEdef_exp(t, y, a,b,c,c_p,d), domain, IC_exp);
 N_sol_exp = DVsol_exp(:, 1);
 A_sol_exp = DVsol_exp(:, 2);
 E_sol_exp = DVsol_exp(:, 3);
 
-% %creating vectors
+%creating vectors to plot solution to a-b bifurcation plot
  Avec = linspace(.01,5,n);
  avec = zeros(0,n);
  bvec = zeros(0,n);
 % 
+% Values came from SS-exp-hopf.mw 
  for i=1:n
      A_sim = Avec(i);
      avec(i) = -(exp(d*A_sim)*(A_sim*c*(c_p)^2-4*c*A_sim*c_p+3*c*A_sim+(c_p)^2-exp(2*d*A_sim)*sqrt(exp(-4*d*A_sim)*(A_sim^2*(c_p-1)^4*(c)^2+4*(c_p)^2*A_sim*(d*A_sim+.5)*(c_p-1)^2*c+(c_p)^4))))/(2*(c_p-1)*(c_p)^2);
@@ -44,7 +51,7 @@ E_sol_exp = DVsol_exp(:, 3);
  ylim([0,max(bvec)])
  xlim([0,max(avec)])
 
-%plotting solution curves 
+%plotting solution curves of NAE-model 
 % Create a new figure
 fig = figure;
 set(fig, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
@@ -75,7 +82,7 @@ set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick
 legend('Nutrients', 'Algae', 'EPS', 'Location', 'northeast');
 legend boxoff; % Hide the legend's axes (border and background)
 
-
+%Defining NAE-model
 function [Dode] = DEdef_exp(I,D,a,b,c,c_p,d)
 %I- indepenedent variable
 %D - dependent variable

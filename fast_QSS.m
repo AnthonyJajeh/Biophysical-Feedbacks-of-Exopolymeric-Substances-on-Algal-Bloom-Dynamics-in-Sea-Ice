@@ -14,10 +14,10 @@ nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS 
 
 %parameters values 
-a = 2;
-b = .2;
-c = 1.3;
-c_p = 2;
+a = 2; %Inflow of nutrients
+b = .2; %Outflow of nutrients
+c = 1.3; %Nutrient uptake due to algae
+c_p = 2; %algal growth rate
 %Initial conditions
 IC_N = 5;
 IC_A = 1;
