@@ -24,17 +24,19 @@ A_max = zeros(1,length(IC_N_values));
 N_max = zeros(1,length(IC_N_values));
 E_max = zeros(1,length(IC_N_values));
 
+%runs a solution plot for different values of specified parameter 
 for i = 1:length(IC_N_values)
     IC_N = IC_N_values(i);
     
     IC_exp = [IC_N IC_A IC_E];
-    % Solve simplified model for current b
+    % Solve simplified model for current N
     
     [IVsol_exp, DVsol_exp] = ode23(@(t, y) DEdef_exp(t, y, a,b,c,c_p,d), domain, IC_exp);
     N_sol_exp = DVsol_exp(:, 1);
     A_sol_exp = DVsol_exp(:, 2);
     E_sol_exp = DVsol_exp(:, 3);
     
+    %Max values of each state variable
     N_max(i)=max(N_sol_exp);
     A_max(i) = max(A_sol_exp);
     E_max(i) = max(E_sol_exp);

@@ -26,16 +26,17 @@ A_max = zeros(1, n_amount);
 N_max = zeros(1,n_amount);
 E_max = zeros(1,n_amount);
 
+%runs a solution plot for different values of specified parameter 
 for i = 1:n_amount
     c = c_vec(i);
     IC_exp = [IC_N IC_A IC_E];
-    % Solve simplified model for current b
-    
+    % Solve model for each c 
     [IVsol_exp, DVsol_exp] = ode23(@(t, y) DEdef_exp(t, y, a,b,c,c_p,d), domain, IC_exp);
     N_sol_exp = DVsol_exp(:, 1);
     A_sol_exp = DVsol_exp(:, 2);
     E_sol_exp = DVsol_exp(:, 3);
     
+    %Max values of each state variable
     N_max(i)=max(N_sol_exp);
     A_max(i) = max(A_sol_exp);
     E_max(i) = max(E_sol_exp);

@@ -26,6 +26,7 @@ A_max = zeros(1, n_amount);
 N_max = zeros(1,n_amount);
 E_max = zeros(1,n_amount);
 
+%runs a solution plot for different values of specified parameter 
 for i = 1:n_amount
     d = d_vec(i);
     IC_exp = [IC_N IC_A IC_E];
