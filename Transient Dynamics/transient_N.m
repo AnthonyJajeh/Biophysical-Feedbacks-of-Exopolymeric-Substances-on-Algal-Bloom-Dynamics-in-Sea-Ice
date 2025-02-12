@@ -11,12 +11,12 @@ EPScolordet = 1/255*[125,91,166]; % color for EPS
 a = 8; %infow of nutrients
 b = .5; %outflow of nutrients
 c = .8; %Nutrient uptake by algae 
-c_p = 1.1; %algal growth rate
+c_p = 1.3; %algal growth rate
 d = .5; %EPS growth rate due to algae 
 
 
-IC_N_values = linspace(0, 100, 20); %Range of initial conditions of nutrients
-IC_A = 1; %Initial condition of algae
+IC_N_values = linspace(0, 2, 20); %Range of initial conditions of nutrients
+IC_A = .00001; %Initial condition of algae
 IC_E = 1; %Initial condition of EPS
 
 %Allocting space for the maximum values of algae, nutrients, and EPS 
@@ -67,7 +67,7 @@ ylabel('algae & EPS','FontSize',20,'Color','k');
 xlim([0, n]);
 xlabel('time (days)','FontSize',20,'Color','k');
 set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
-
+title("N_0=",IC_N)
 
 % Add legend
 legend('Nutrients', 'Algae', 'EPS', 'Location', 'northeast');

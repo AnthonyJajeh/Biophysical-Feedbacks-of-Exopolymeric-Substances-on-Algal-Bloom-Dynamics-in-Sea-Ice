@@ -9,13 +9,13 @@ nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS
 
 a_vec = linspace(1,50,20); %infow of nutrients
-b = .5; %outflow of nutrients
+b = .4; %outflow of nutrients
 c = .8; %Nutrient uptake by algae 
 c_p = 1.1; %algal growth rate
 d = .5; %EPS growth rate due to algae 
 
 
-IC_N = 15;
+IC_N = 1;
 IC_A = 1; %Initial condition of algae
 IC_E = 1; %Initial condition of EPS
 
@@ -39,7 +39,6 @@ for i = 1:length(a_vec)
     N_max(i)=max(N_sol_exp);
     A_max(i) = max(A_sol_exp);
     E_max(i) = max(E_sol_exp);
-    
   
     %plotting solution curves of NAE-model 
 % Create a new figure
