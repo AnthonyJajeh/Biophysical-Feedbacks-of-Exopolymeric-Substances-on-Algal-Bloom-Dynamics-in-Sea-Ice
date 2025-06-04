@@ -1,0 +1,18 @@
+#Author: Anthony Jajeh 
+#Full model for use of xpp.
+#Edited June 4th, 2025
+params alpha = 10 c = .85 b = .14 f = 1.29 d=.49
+
+
+A' = (f*A*N)/(N+1)-A
+N' = alpha*exp(-E)-(c*N*A)/(1+N)-(b*N)*exp(-E)
+E' = d*A-E
+
+init A=.165, N=.0225, E=.79
+@ TOTAL=100,DT=.05,xlo=0,xhi=15,ylo=-.01,yhi=15
+@ xplot=N,yplot=A
+@meth=cvode
+@ dsmin=.01,dsmax=0.02,parmin=0,parmax=15,autoxmin=0,autoxmax=150
+@ colormap=5
+@ autoymax=150,autoymin=0
+Done
