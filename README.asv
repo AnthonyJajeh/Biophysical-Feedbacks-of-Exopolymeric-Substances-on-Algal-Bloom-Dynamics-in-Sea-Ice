@@ -4,12 +4,6 @@ in the paper
 
 nondimensional_parameters.pdf are all the available nondimensional scaling
 
-no_alpha_beta.mw: Analysis of the full model without alpha and beta 
-specified
-
-plotxppaut4p4.m: Matlab file for running the .dat files grabbed from 
-XPP to create bifurcation plots.
-
 Figure 1 File:  
 ODE-QSS-FAST.mw: shows all the steady state analysis done for 
 the fast-model 
@@ -58,9 +52,8 @@ Figure 8 File:
 figure_8a...8e: MATLAB files for running the solution plots for the 
 transient dynamics, with parameter schemes chosen.
 
-Figure 9 File:
-Figure_9.m: Matlab file making the solution plot of exponential full model 
-with real life parameter regime 
+
+
 
 
 
