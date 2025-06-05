@@ -1,7 +1,7 @@
 #Author: Anthony Jajeh 
 #Full model for use of xpp.
 #Edited June 4th, 2025
-params alpha = 10 c = .85 b = .14 f = 1.29 d=.49
+params alpha = 1000.0 c = 34.3 b = .1 f = 5.1 d=52
 
 
 A' = (f*A*N)/(N+1)-A
