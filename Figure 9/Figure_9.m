@@ -10,22 +10,23 @@ algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS
 
-%Parameter values
-phi = .05;
-psi = .5;
-mu = .4;
+%Parameter values for fig 4b
+phi = .2;
+psi = .1;
+mu = .08;
 gamma = .01; 
-nu_1 = .24; 
-nu_2 = .026; 
-xi = .15;
+nu_1 = .2; 
+nu_2 = .05; 
+xi = .2;
 delta = .007; 
 eta = .03;
 
 
-%creating initial condition vectors
-IC_N = .165;
-IC_A = .0225;
-IC_E = .79;
+%Initial conditions
+IC_N = .2;
+IC_A = .03;
+IC_E = .8;
+
 IC_exp = [IC_N IC_A IC_E];
 
 %calculating realistic-model solution plots 
@@ -44,7 +45,7 @@ hold on;
 yyaxis left;
 plot(IVsol_exp, N_sol_exp, 'color', nutrientcolordet, 'linewidth', 3);
 ylim([0, max(N_sol_exp) * 1.2]);
-ylabel('nutrients','FontSize',20,'Color','k');
+ylabel('nutrients (mg N/L)','FontSize',20,'Color','k');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
 % Plot algae and EPS on the right y-axis
@@ -53,12 +54,12 @@ plot(IVsol_exp, A_sol_exp, 'color', algaecolordet, 'linewidth', 3);
 hold on;
 plot(IVsol_exp, E_sol_exp, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
 ylim([0, max([A_sol_exp; E_sol_exp]) * 1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
-ylabel('algae & EPS','FontSize',20,'Color','k');
+ylabel('algae (mg chl A/L) & EPS (mg XGEQUIV/L)','FontSize',20,'Color','k');
 
 % Set common properties
 xlim([0, n]);
 xlabel('time (days)','FontSize',20,'Color','k');
-set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
+set(gca, 'fontsize', 17, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
 
 
 % Add legend

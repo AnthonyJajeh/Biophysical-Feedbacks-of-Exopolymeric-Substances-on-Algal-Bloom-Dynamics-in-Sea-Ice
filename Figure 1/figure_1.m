@@ -13,20 +13,8 @@ algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS 
 
-% %Parameter values for fig 1a
-% phi = .001;
-% psi = .5;
-% mu = 1.;
-% gamma = .01; 
-% nu_1 = .24; 
-% nu_2 = .026; 
-% xi = .15;
-% delta = .007; 
-% eta = .03;
-
-
-%Parameter values for fig 1b
-phi = .1;
+%Parameter values for fig 1a
+phi = .001;
 psi = .5;
 mu = 1.5;
 gamma = .01; 
@@ -35,6 +23,18 @@ nu_2 = .026;
 xi = .15;
 delta = .007; 
 eta = .03;
+
+
+% %Parameter values for fig 1b
+% phi = .1;
+% psi = .5;
+% mu = 1.5;
+% gamma = .01; 
+% nu_1 = .24; 
+% nu_2 = .026; 
+% xi = .15;
+% delta = .007; 
+% eta = .03;
 
 %nondimensional conversion values 
 a = phi/(gamma*delta);
@@ -66,13 +66,13 @@ hold on;
 yyaxis left;
 plot(IVsol_fast, N_sol_fast, 'color', nutrientcolordet, 'linewidth', 4);
 ylim([0, max(N_sol_fast) * 1.2]);
-ylabel('nutrients','Color','k');
+ylabel('nutrients (mg N/L)','Color','k');
 set(gca, 'fontsize', 18, 'XColor', 'k', 'YColor', 'k'); % Set axis tick label colors to black
 
 % Plot algae on the right y-axis
 yyaxis right;
 plot(IVsol_fast, A_sol_fast, 'color', algaecolordet, 'linewidth', 4);
-ylabel('algae','Color','k');
+ylabel('algae (mg chl A/L)','Color','k');
 set(gca, 'fontsize', 18, 'XColor', 'k', 'YColor', 'k'); % Set axis tick label colors to black
 
 % Set common properties

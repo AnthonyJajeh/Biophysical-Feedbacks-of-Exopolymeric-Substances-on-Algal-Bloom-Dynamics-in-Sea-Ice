@@ -5,7 +5,7 @@ in the paper
 nondimensional_parameters.pdf are all the available nondimensional scaling
 
 no_alpha_beta.mw: Analysis of the full model without alpha and beta 
-specified
+not specified
 
 plotxppaut4p4.m: Matlab file for running the .dat files grabbed from 
 XPP to create bifurcation plots.

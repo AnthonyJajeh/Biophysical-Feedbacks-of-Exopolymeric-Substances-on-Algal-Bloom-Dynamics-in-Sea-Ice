@@ -73,7 +73,7 @@ hold on;
 
 plot(IVsol_slow, DVsol_slow* mu, 'color', EPScolordet, 'linewidth', 3);
 ylim([0, max(DVsol_slow*mu) * 1.2]);
-ylabel('EPS','Color','k');
+ylabel('EPS (mg XGEQUIV/L)','Color','k');
 set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis tick label colors to black
 
 

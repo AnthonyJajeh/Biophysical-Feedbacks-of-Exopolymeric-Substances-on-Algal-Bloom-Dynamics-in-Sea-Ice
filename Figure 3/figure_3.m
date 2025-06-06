@@ -28,6 +28,7 @@ sigma = .8; % example scaling factor, adjust as needed
 
 
 %nondimensional conversion values 
+epsilon = eta/delta;
 a = phi/(gamma*delta);
 b = psi/delta;
 c = nu_1/delta;
@@ -55,7 +56,7 @@ A_sol_fast = DVsol_fast(:, 2)*gamma;
 
 
 %calculating full-model solution plots 
-[IVsol_exp, DVsol_exp] = ode23(@(t, y) DEdef_exp(t, y, a,b,c,f,d), domain, IC_full);
+[IVsol_exp, DVsol_exp] = ode23(@(t, y) DEdef_exp(t, y, a,b,c,f,d,epsilon), domain, IC_full);
 N_sol_exp = DVsol_exp(:, 1)*gamma;
 A_sol_exp = DVsol_exp(:, 2)*gamma;
 E_sol_exp = DVsol_exp(:, 3)*mu;
@@ -71,18 +72,18 @@ fig = figure;
 hold on;
 
 % Plot EPS from slow model
-plot(IVsol_slow, DVsol_slow*mu, 'Color', EPScolordet, 'LineWidth', 2, 'LineStyle', '--', 'DisplayName', 'EPS (Slow Model)');
+plot(IVsol_slow, DVsol_slow*mu, 'Color', EPScolordet, 'LineWidth', 2, 'LineStyle', '--', 'DisplayName', 'Slow Model');
 
 % Plot EPS from full model
-plot(IVsol_exp, E_sol_exp, 'Color', EPScolordet, 'LineWidth', 2, 'LineStyle', '-', 'DisplayName', 'EPS (Full Model)');
+plot(IVsol_exp, E_sol_exp, 'Color', EPScolordet, 'LineWidth', 2, 'LineStyle', '-', 'DisplayName', 'Full Model');
 
 %Plot EPS from fast-model
-plot(IVsol_exp, E_plot*mu, 'Color', EPScolordet, 'LineWidth', 2,'LineStyle', ":", 'DisplayName', 'EPS (Fast Model)');
+plot(IVsol_exp, E_plot*mu, 'Color', EPScolordet, 'LineWidth', 2,'LineStyle', ":", 'DisplayName', 'Fast Model');
 
 sigma = .8; % example scaling factor, adjust as needed
 E_exact = sigma * DVsol_exact(:, 2)*gamma;
 %Plot EPS from exact model E(t) = sigma * A(t)
-plot(IVsol_exact, E_exact, 'Color', EPScolordet, 'LineWidth', 2,'LineStyle', '-.', 'DisplayName', 'EPS (Exact Model)');
+plot(IVsol_exact, E_exact, 'Color', EPScolordet, 'LineWidth', 2,'LineStyle', '-.', 'DisplayName', 'Exact Model');
 
 % Set axes limits dynamically based on max EPS value from all
 maxnutrient = max([DVsol_slow*mu; E_sol_exp; E_exact]);
@@ -90,7 +91,7 @@ ylim([0, maxnutrient * 1.2]);
 xlim([0, n]);
 
 xlabel('Time (days)', 'Color', 'k');
-ylabel('EPS', 'Color', 'k');
+ylabel('EPS (mg XGEQUIV/L)', 'Color', 'k');
 set(gca, 'FontSize', 20, 'XColor', 'k', 'YColor', 'k');
 
 legend('Location', 'northeast');
@@ -105,13 +106,13 @@ fig = figure;
 hold on;
 
 % Plot algae from full model
-plot(IVsol_exp, A_sol_exp, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', '-',  'DisplayName', 'Algae (Full Model)');
+plot(IVsol_exp, A_sol_exp, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', '-',  'DisplayName', 'Full Model');
 
 % Plot algae from fast model
-plot(IVsol_fast, A_sol_fast, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', ':',  'DisplayName', 'Algae (Fast Model)');
+plot(IVsol_fast, A_sol_fast, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', ':',  'DisplayName', 'Fast Model');
 
 % Plot aglae from Exact model 
-plot(IVsol_exact, A_sol_exact, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', '-.',  'DisplayName', 'Algae (Exact Model)');
+plot(IVsol_exact, A_sol_exact, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', '-.',  'DisplayName', 'Exact Model');
 
 % Set axes limits dynamically based on max algae value from all
 maxnutrient = max([A_sol_exp; A_sol_exact; A_sol_fast]);
@@ -119,7 +120,7 @@ ylim([0, maxnutrient * 1.2]);
 xlim([0, n]);
 
 xlabel('Time (days)', 'Color', 'k');
-ylabel('Algae', 'Color', 'k');
+ylabel('Algae (mg chl A/L)', 'Color', 'k');
 set(gca, 'FontSize', 20, 'XColor', 'k', 'YColor', 'k');
 
 legend('Location', 'northeast');
@@ -136,13 +137,13 @@ fig = figure;
 hold on;
 
 % Plot nutrient from full model
-plot(IVsol_exp, N_sol_exp, 'Color', nutrientcolordet, 'LineWidth', 2,'LineStyle', '-',  'DisplayName', 'Nutrients (Full Model)');
+plot(IVsol_exp, N_sol_exp, 'Color', nutrientcolordet, 'LineWidth', 2,'LineStyle', '-',  'DisplayName', 'Full Model');
 
 % Plot nutrient from fast model
-plot(IVsol_fast, N_sol_fast, 'Color', nutrientcolordet, 'LineWidth', 2,'LineStyle', ':',  'DisplayName', ' Nutrients (Fast Model)');
+plot(IVsol_fast, N_sol_fast, 'Color', nutrientcolordet, 'LineWidth', 2,'LineStyle', ':',  'DisplayName', 'Fast Model');
 
 % Plot nutrient from Exact model 
-plot(IVsol_exact, N_sol_exact, 'Color', nutrientcolordet, 'LineWidth', 2,'LineStyle', '-.',  'DisplayName', 'Nutrients (Exact Model)');
+plot(IVsol_exact, N_sol_exact, 'Color', nutrientcolordet, 'LineWidth', 2,'LineStyle', '-.',  'DisplayName', 'Exact Model');
 
 % Set axes limits dynamically based on max algae value from all
 maxnutrient = max([N_sol_exp; N_sol_exact; N_sol_fast]);
@@ -150,7 +151,7 @@ ylim([0, maxnutrient * 1.2]);
 xlim([0, n]);
 
 xlabel('Time (days)', 'Color', 'k');
-ylabel('Nutrients', 'Color', 'k');
+ylabel('Nutrients (mg N/L)', 'Color', 'k');
 set(gca, 'FontSize', 20, 'XColor', 'k', 'YColor', 'k');
 
 legend('Location', 'northeast');
@@ -194,7 +195,7 @@ end
 
 
 %Defining NAE-full
-function [Dode] = DEdef_exp(I,D,a,b,c,f,d)
+function [Dode] = DEdef_exp(I,D,a,b,c,f,d,epsilon)
 %I- indepenedent variable
 %D - dependent variable
 
@@ -205,8 +206,8 @@ A = D(2);
 E = D(3);
 
 %set of odes
-dNdt =a*exp(-E)-(c*A*N)/(N+1)-b*N*exp(-E);
-dAdt = (f*N*A)/(1 + N) - A;
+dNdt =(a*exp(-E)-(c*A*N)/(N+1)-b*N*exp(-E))/epsilon;
+dAdt = ((f*N*A)/(1 + N) - A)/epsilon;
 dEdt = d*A - E;
 
 % odes in vector form

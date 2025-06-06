@@ -9,17 +9,30 @@ domain = [0 n];
 algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS
+%Parameter values 
+phi = .001;
+psi = .001;
+mu =  .0008;
+gamma = .01; 
+nu_1_vec = linspace(.01,.2,20);
+nu_2 = .05; 
+xi = .2;
+delta = .007; 
+eta = .03;
 
-a = 10; %infow of nutrients
-b = .1; %outflow of nutrients
-c_vec = linspace(.8,25,n_amount); %Nutrient uptake by algae 
-f = 1.3; %algal growth rate
-d = .5; %EPS growth rate due to algae 
 
+%nondimensional conversion values 
+epsilon = eta/delta;
+a = phi/(gamma*delta);
+b = psi/delta;
+c_vec = nu_1_vec/delta;
+d = (nu_2*gamma)/(mu*eta);
+f = 5.7;
 
-IC_N = 15;
-IC_A = 1; %Initial condition of algae
-IC_E = 1; %Initial condition of EPS
+%Initial conditions
+IC_N = .2;
+IC_A = .03;
+IC_E = .8; 
 
 %Allocting space for the maximum values of algae, nutrients, and EPS 
 A_max = zeros(1, n_amount);
@@ -31,10 +44,10 @@ for i = 1:n_amount
     c = c_vec(i);
     IC_exp = [IC_N IC_A IC_E];
     % Solve model for each c 
-    [IVsol_exp, DVsol_exp] = ode23(@(t, y) DEdef_exp(t, y, a,b,c,f,d), domain, IC_exp);
-    N_sol_exp = DVsol_exp(:, 1);
-    A_sol_exp = DVsol_exp(:, 2);
-    E_sol_exp = DVsol_exp(:, 3);
+    [IVsol_exp, DVsol_exp] = ode23(@(t, y) DEdef_exp(t, y, a,b,c,f,d,epsilon), domain, IC_exp);
+    N_sol_exp = DVsol_exp(:, 1)*gamma;
+    A_sol_exp = DVsol_exp(:, 2)*gamma;
+    E_sol_exp = DVsol_exp(:, 3)*mu;
     
     %Max values of each state variable
     N_max(i)=max(N_sol_exp);
@@ -80,11 +93,10 @@ fig = figure;
 set(fig, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
 hold on;
 
-% Plot nutrients on the left y-axis
 yyaxis left;
 plot(c_vec, N_max, 'color', nutrientcolordet, 'linewidth', 3);
 ylim([0, max(N_max) * 1.2]);
-ylabel('maximum nutrients','FontSize',20,'Color','k');
+ylabel('max nutrients (mg N/L)','FontSize',17,'Color','k');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
 % Plot algae and EPS on the right y-axis
@@ -93,9 +105,9 @@ plot(c_vec, A_max, 'color', algaecolordet, 'linewidth', 3);
 hold on;
 plot(c_vec, E_max, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
 ylim([0, max([max(A_max); max(E_max)]) * 1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
-ylabel('maximum algae & EPS','FontSize',20,'Color','k');
+ylabel('max algae (mg chl A/L) & EPS (mg XGEQUIV/L)','FontSize',17,'Color','k');
 
-xlabel('c (rate that algae uptake nutrients)', 'FontSize', 20);
+xlabel('c (rate that algae uptake nutrients)', 'FontSize', 17);
 xlim([min(c_vec),max(c_vec)])
 % Add legend
 set(gca, 'YColor', 'k'); % <-- Apply black color to right y-axis
@@ -103,7 +115,7 @@ legend('Max Nutrients', 'Max Algae', 'Max EPS', 'Location', 'northeast');
 legend boxoff; % Hide the legend's axes (border and background)
 
 %Defining NAE-model
-function [Dode] = DEdef_exp(I,D,a,b,c,f,d)
+function [Dode] = DEdef_exp(I,D,a,b,c,f,d,epsilon)
 %I- indepenedent variable
 %D - dependent variable
 
@@ -114,8 +126,8 @@ A = D(2);
 E = D(3);
 
 %set of odes
-dNdt =a*exp(-E)-(c*A*N)/(N+1)-b*N*exp(-E);
-dAdt = (f*N*A)/(1 + N) - A;
+dNdt =(a*exp(-E)-(c*A*N)/(N+1)-b*N*exp(-E))/epsilon;
+dAdt = ((f*N*A)/(1 + N) - A)/epsilon;
 dEdt = d*A - E;
 
 % odes in vector form
