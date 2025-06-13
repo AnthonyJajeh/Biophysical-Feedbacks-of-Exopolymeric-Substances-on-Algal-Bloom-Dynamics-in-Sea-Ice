@@ -5,7 +5,7 @@
 clear all;clc;close all;
 
 %domain 
-n=25;
+n=15;
 domain = [0 n];
 
 % Define colors for deterministic results
@@ -15,13 +15,13 @@ EPScolordet = 1/255*[125,91,166]; % color for EPS
 
 
 %Parameter values for fig 3
-phi = .05;
-psi = .5;
-mu = 1.5;
+phi = .001;
+psi = .001;
+mu = .08;
 gamma = .01; 
-nu_1 = .24; 
-nu_2 = .026; 
-xi = .15;
+nu_1 = .2; 
+nu_2 = .05; 
+xi = .2;
 delta = .007; 
 eta = .03;
 sigma = .8; % example scaling factor, adjust as needed
@@ -37,9 +37,9 @@ f = xi * c;
 h = (sigma*gamma)/mu;
 
 %Initial conditions
-IC_N = .165;
-IC_A = .0225;
-IC_E = .79;
+IC_N = .2;
+IC_A = .03;
+IC_E = .8;
 
 %initial condition vector 
 IC_fast = [IC_N IC_A];
@@ -47,24 +47,24 @@ IC_slow = IC_E;
 IC_full = [IC_N IC_A IC_E];
 
 %Solving QSS fast-model 
-[IVsol_fast, DVsol_fast] = ode23(@(t, y) DEdef_fast(t, y, a,b,c,f,IC_E), domain, IC_fast);
+[IVsol_fast, DVsol_fast] = ode45(@(t, y) DEdef_fast(t, y, a,b,c,f,IC_E), domain, IC_fast);
 N_sol_fast = DVsol_fast(:, 1)*gamma;
 A_sol_fast = DVsol_fast(:, 2)*gamma;
 
 %Solving QSS slow-model
-[IVsol_slow, DVsol_slow] = ode15s(@(t, E) DEdef_slow(t, E, a,b,c,f,d), domain, IC_E);
+[IVsol_slow, DVsol_slow] = ode45(@(t, E) DEdef_slow(t, E, a,b,c,f,d), domain, IC_E);
 
 
 %calculating full-model solution plots 
-[IVsol_exp, DVsol_exp] = ode23(@(t, y) DEdef_exp(t, y, a,b,c,f,d,epsilon), domain, IC_full);
+[IVsol_exp, DVsol_exp] = ode45(@(t, y) DEdef_exp(t, y, a,b,c,f,d,epsilon), domain, IC_full);
 N_sol_exp = DVsol_exp(:, 1)*gamma;
 A_sol_exp = DVsol_exp(:, 2)*gamma;
 E_sol_exp = DVsol_exp(:, 3)*mu;
 
-%Solving exact-model using ode23
-[IVsol_exact, DVsol_exact] = ode23(@(t, y) DEdef_exact(t, y, a,b,c,f,h), domain, IC_fast);
-N_sol_exact = DVsol_exact(:, 1)*gamma;
-A_sol_exact = DVsol_exact(:, 2)*gamma;
+%Solving tracking-model using ode23
+[IVsol_tracking, DVsol_tracking] = ode45(@(t, y) DEdef_tracking(t, y, a,b,c,f,h), domain, IC_fast);
+N_sol_tracking = DVsol_tracking(:, 1)*gamma;
+A_sol_tracking = DVsol_tracking(:, 2)*gamma;
 
 E_plot = IC_E * ones(size(E_sol_exp));
 
@@ -81,12 +81,12 @@ plot(IVsol_exp, E_sol_exp, 'Color', EPScolordet, 'LineWidth', 2, 'LineStyle', '-
 plot(IVsol_exp, E_plot*mu, 'Color', EPScolordet, 'LineWidth', 2,'LineStyle', ":", 'DisplayName', 'Fast Model');
 
 sigma = .8; % example scaling factor, adjust as needed
-E_exact = sigma * DVsol_exact(:, 2)*gamma;
-%Plot EPS from exact model E(t) = sigma * A(t)
-plot(IVsol_exact, E_exact, 'Color', EPScolordet, 'LineWidth', 2,'LineStyle', '-.', 'DisplayName', 'Exact Model');
+E_tracking = sigma * DVsol_tracking(:, 2)*gamma;
+%Plot EPS from tracking model E(t) = sigma * A(t)
+plot(IVsol_tracking, E_tracking, 'Color', EPScolordet, 'LineWidth', 2,'LineStyle', '-.', 'DisplayName', 'Tracking Model');
 
 % Set axes limits dynamically based on max EPS value from all
-maxnutrient = max([DVsol_slow*mu; E_sol_exp; E_exact]);
+maxnutrient = max([DVsol_slow*mu; E_sol_exp; E_tracking]);
 ylim([0, maxnutrient * 1.2]);
 xlim([0, n]);
 
@@ -111,11 +111,11 @@ plot(IVsol_exp, A_sol_exp, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', '
 % Plot algae from fast model
 plot(IVsol_fast, A_sol_fast, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', ':',  'DisplayName', 'Fast Model');
 
-% Plot aglae from Exact model 
-plot(IVsol_exact, A_sol_exact, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', '-.',  'DisplayName', 'Exact Model');
+% Plot aglae from Tracking model 
+plot(IVsol_tracking, A_sol_tracking, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', '-.',  'DisplayName', 'Tracking Model');
 
 % Set axes limits dynamically based on max algae value from all
-maxnutrient = max([A_sol_exp; A_sol_exact; A_sol_fast]);
+maxnutrient = max([A_sol_exp; A_sol_tracking; A_sol_fast]);
 ylim([0, maxnutrient * 1.2]);
 xlim([0, n]);
 
@@ -142,11 +142,11 @@ plot(IVsol_exp, N_sol_exp, 'Color', nutrientcolordet, 'LineWidth', 2,'LineStyle'
 % Plot nutrient from fast model
 plot(IVsol_fast, N_sol_fast, 'Color', nutrientcolordet, 'LineWidth', 2,'LineStyle', ':',  'DisplayName', 'Fast Model');
 
-% Plot nutrient from Exact model 
-plot(IVsol_exact, N_sol_exact, 'Color', nutrientcolordet, 'LineWidth', 2,'LineStyle', '-.',  'DisplayName', 'Exact Model');
+% Plot nutrient from Tracking model 
+plot(IVsol_tracking, N_sol_tracking, 'Color', nutrientcolordet, 'LineWidth', 2,'LineStyle', '-.',  'DisplayName', 'Tracking Model');
 
 % Set axes limits dynamically based on max algae value from all
-maxnutrient = max([N_sol_exp; N_sol_exact; N_sol_fast]);
+maxnutrient = max([N_sol_exp; N_sol_tracking; N_sol_fast]);
 ylim([0, maxnutrient * 1.2]);
 xlim([0, n]);
 
@@ -215,7 +215,7 @@ Dode = [dNdt; dAdt; dEdt];
 end
 
 %Defining full model with E(t) = sigma * A(t)
-function [Dode] = DEdef_exact(I,D,a,b,c,f,h)
+function [Dode] = DEdef_tracking(I,D,a,b,c,f,h)
 %I- indepenedent variable
 %D - dependent variable
 

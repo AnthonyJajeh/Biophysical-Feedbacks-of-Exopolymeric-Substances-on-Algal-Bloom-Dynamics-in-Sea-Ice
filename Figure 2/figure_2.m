@@ -13,13 +13,13 @@ n=25;
 domain = [0 n];
 
 %Parameter values for fig 2
-phi = .01;
-psi = .5;
-mu = 1.5;
+phi = .001;
+psi = .001;
+mu = .08;
 gamma = .01; 
-nu_1 = .24; 
-nu_2 = .026; 
-xi = .15;
+nu_1 = .2; 
+nu_2 = .05; 
+xi = .2;
 delta = .007; 
 eta = .03;
 

@@ -1,41 +1,64 @@
-%Author: Anthony Jajeh
-%Date: June 3rd, 2025
-% Creates figure 9
-% Steady state analysis of realistic-model using exponential function as
-% inflow/outflow of nutrients functions
+%Author:Anthony Jajeh
+%Date: June 6th, 2025
+%Testing to see when algal and EPS blooms appear for various values of 
+% parameter f 
 clear all; clc; close all;
 n=250;
+n_amount = 20;
 domain = [0 n];
 algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS
 
-%Parameter values for fig 4b
-phi = .2;
-psi = .1;
-mu = .08;
+%Parameter values 
+phi = .001;
+psi = .001;
+mu =  .0008;
 gamma = .01; 
-nu_1 = .2; 
+nu_1 = .2;
 nu_2 = .05; 
-xi = .2;
+xi_vec = linspace(.01,.4,20);
 delta = .007; 
 eta = .03;
 
 
+%nondimensional conversion values 
+epsilon = eta/delta;
+a = phi/(gamma*delta);
+b = psi/delta;
+c = .2/delta;
+d = (nu_2*gamma)/(mu*eta);
+f_vec = xi_vec* (nu_1/delta);
+
 %Initial conditions
 IC_N = .2;
 IC_A = .03;
-IC_E = .8;
+IC_E = .8; 
+%Allocting space for the maximum values of algae, nutrients, and EPS 
+A_max = zeros(1, n_amount);
+N_max = zeros(1,n_amount);
+E_max = zeros(1,n_amount);
 
-IC_exp = [IC_N IC_A IC_E];
+%runs a solution plot for different values of specified parameter 
+for i = 1:n_amount
 
-%calculating realistic-model solution plots 
-[IVsol_exp, DVsol_exp] = ode23(@(t, y) DEdef_realistic(t, y, phi, psi ,mu, gamma, nu_1, nu_2, xi, delta, eta), domain, IC_exp);
-N_sol_exp = DVsol_exp(:, 1);
-A_sol_exp = DVsol_exp(:, 2);
-E_sol_exp = DVsol_exp(:, 3);
-
-%plotting solution curves of realistic-model 
+    f = f_vec(i);
+    IC_exp = [IC_N IC_A IC_E];
+    % Solve model for current f
+    
+    %Solves trajectory plots
+    [IVsol_exp, DVsol_exp] = ode23(@(t, y) DEdef_exp(t, y, a,b,c,f,d,epsilon), domain, IC_exp);
+    N_sol_exp = DVsol_exp(:, 1)*gamma;
+    A_sol_exp = DVsol_exp(:, 2)*gamma;
+    E_sol_exp = DVsol_exp(:, 3)*mu;
+    
+    %Max values of each state variable
+    N_max(i)=max(N_sol_exp);
+    A_max(i) = max(A_sol_exp);
+    E_max(i) = max(E_sol_exp);
+    
+  
+    %plotting solution curves of NAE-model 
 % Create a new figure
 fig = figure;
 set(fig, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
@@ -45,7 +68,7 @@ hold on;
 yyaxis left;
 plot(IVsol_exp, N_sol_exp, 'color', nutrientcolordet, 'linewidth', 3);
 ylim([0, max(N_sol_exp) * 1.2]);
-ylabel('nutrients (mg N/L)','FontSize',20,'Color','k');
+ylabel('nutrients','FontSize',20,'Color','k');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
 % Plot algae and EPS on the right y-axis
@@ -54,20 +77,51 @@ plot(IVsol_exp, A_sol_exp, 'color', algaecolordet, 'linewidth', 3);
 hold on;
 plot(IVsol_exp, E_sol_exp, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
 ylim([0, max([A_sol_exp; E_sol_exp]) * 1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
-ylabel('algae (mg chl A/L) & EPS (mg XGEQUIV/L)','FontSize',20,'Color','k');
+ylabel('algae & EPS','FontSize',20,'Color','k');
 
 % Set common properties
 xlim([0, n]);
 xlabel('time (days)','FontSize',20,'Color','k');
-set(gca, 'fontsize', 17, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
-
+set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
+title("f=",f_vec)
 
 % Add legend
 legend('Nutrients', 'Algae', 'EPS', 'Location', 'northeast');
 legend boxoff; % Hide the legend's axes (border and background)
 
-%Defining realistic-full-model
-function [Dode] = DEdef_realistic(I,D,phi,psi,mu, gamma, nu_1, nu_2, xi, delta, eta)
+end
+
+
+
+fig = figure;
+set(fig, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
+hold on;
+
+yyaxis left;
+plot(f_vec, N_max, 'color', nutrientcolordet, 'linewidth', 3);
+ylim([0, max(N_max) * 1.2]);
+ylabel('max nutrients (mg N/L)','FontSize',17,'Color','k');
+set(gca, 'YColor', 'k'); % Set the left axis color to black
+
+% Plot algae and EPS on the right y-axis
+yyaxis right;
+plot(f_vec, A_max, 'color', algaecolordet, 'linewidth', 3);
+hold on;
+plot(f_vec, E_max, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
+ylim([0, max([max(A_max); max(E_max)]) * 1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+ylabel('max algae (mg chl A/L) & EPS (mg XGEQUIV/L)','FontSize',17,'Color','k');
+xlabel('f (growth rate of algae)', 'FontSize', 17);
+xlim([min(f_vec),max(f_vec)])
+
+
+% Add legend
+set(gca, 'YColor', 'k'); % <-- Apply black color to right y-axis
+
+legend('Max Nutrients', 'Max Algae', 'Max EPS', 'Location', 'northeast');
+legend boxoff; % Hide the legend's axes (border and background)
+
+%Defining NAE-model
+function [Dode] = DEdef_exp(I,D,a,b,c,f,d,epsilon)
 %I- indepenedent variable
 %D - dependent variable
 
@@ -78,9 +132,9 @@ A = D(2);
 E = D(3);
 
 %set of odes
-dNdt = phi * exp(-E/mu) - (nu_1*N*A)/(N+gamma) - psi*N*exp(-E/mu);
-dAdt = (xi*nu_1*A*N)/(N+gamma) - delta*A;
-dEdt = nu_2*A - eta*E;
+dNdt =(a*exp(-E)-(c*A*N)/(N+1)-b*N*exp(-E))/epsilon;
+dAdt = ((f*N*A)/(1 + N) - A)/epsilon;
+dEdt = d*A - E;
 
 % odes in vector form
 Dode = [dNdt; dAdt; dEdt];

@@ -5,7 +5,7 @@
 clear all;clc;close all;
 
 %domain 
-n=25;
+n=15;
 domain = [0 n];
 
 % Define colors for deterministic results
@@ -13,28 +13,28 @@ algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS 
 
-%Parameter values for fig 1a
-phi = .001;
-psi = .5;
-mu = 1.5;
-gamma = .01; 
-nu_1 = .24; 
-nu_2 = .026; 
-xi = .15;
-delta = .007; 
-eta = .03;
-
-
-% %Parameter values for fig 1b
-% phi = .1;
-% psi = .5;
-% mu = 1.5;
+% %Parameter values for fig 1a
+% phi = .0001;
+% psi = .1;
+% mu = .08;
 % gamma = .01; 
-% nu_1 = .24; 
-% nu_2 = .026; 
-% xi = .15;
+% nu_1 = .2; 
+% nu_2 = .05; 
+% xi = .2;
 % delta = .007; 
 % eta = .03;
+% 
+% % 
+% %Parameter values for fig 1b
+phi = .00001;
+psi = .001;
+mu = .15;
+gamma = .01; 
+nu_1 = .2; 
+nu_2 = .05; 
+xi = .2;
+delta = .007; 
+eta = .03;% 
 
 %nondimensional conversion values 
 a = phi/(gamma*delta);
@@ -44,16 +44,16 @@ d = (nu_2*gamma)/(mu*eta);
 f = xi * c;
 
 %Initial conditions
-IC_N = .165;
-IC_A = .0225;
-IC_E = .79;
+IC_N = .2;
+IC_A = .03;
+IC_E = .8;
 
 %initial condition vector 
 IC_fast = [IC_N IC_A];
 
 %scaled values
 %Solving QSS fast-model 
-[IVsol_fast, DVsol_fast] = ode23(@(t, y) DEdef_fast(t, y, a,b,c,f,IC_E), domain, IC_fast);
+[IVsol_fast, DVsol_fast] = ode45(@(t, y) DEdef_fast(t, y, a,b,c,f,IC_E), domain, IC_fast);
 N_sol_fast = DVsol_fast(:, 1)*gamma;
 A_sol_fast = DVsol_fast(:, 2)*gamma;
 

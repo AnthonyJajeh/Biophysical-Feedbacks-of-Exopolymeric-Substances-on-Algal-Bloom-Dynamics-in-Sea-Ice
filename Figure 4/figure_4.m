@@ -3,7 +3,7 @@
 % Steady state analysis of NAE-model using exponential function as
 % inflow/outflow of nutrients functions
 clear all; clc; close all;
-n=2500;
+n=15;
 domain = [0 n];
 algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\

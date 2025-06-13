@@ -10,7 +10,7 @@ EPScolordet = 1/255*[125,91,166]; % color for EPS
 
 %Parameter values 
 phi = .001;
-psi_vec = linspace(.001,.01, 20);
+psi_vec = linspace(.0001,.01, 20);
 mu =  .0008;
 gamma = .01; 
 nu_1 = .2; 

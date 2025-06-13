@@ -9,7 +9,7 @@ nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS
 
 %Parameter values 
-phi_vec = linspace(.001,.01,20);
+phi_vec = linspace(.0001,.01,20);
 psi = .001;
 mu =  .0008;
 gamma = .01; 
