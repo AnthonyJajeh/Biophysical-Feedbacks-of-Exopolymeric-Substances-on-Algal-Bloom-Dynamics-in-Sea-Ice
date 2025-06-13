@@ -37,9 +37,9 @@ f = xi * c;
 h = (sigma*gamma)/mu;
 
 %Initial conditions
-IC_N = .2;
+IC_N = 10;
 IC_A = .03;
-IC_E = .8;
+IC_E = .01;
 
 %initial condition vector 
 IC_fast = [IC_N IC_A];

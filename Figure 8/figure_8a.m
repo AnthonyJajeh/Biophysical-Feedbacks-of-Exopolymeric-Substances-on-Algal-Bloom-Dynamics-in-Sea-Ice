@@ -29,9 +29,9 @@ d = (nu_2*gamma)/(mu*eta);
 f = xi * c;
 
 %Initial conditions
-IC_N = .2;
+IC_N = 5;
 IC_A = .03;
-IC_E = .8;
+IC_E = .01;
 
 %Allocting space for the maximum values of algae, nutrients, and EPS 
 A_max = zeros(1,length(a_vec));

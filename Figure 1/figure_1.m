@@ -23,10 +23,10 @@ EPScolordet = 1/255*[125,91,166]; % color for EPS
 % xi = .2;
 % delta = .007; 
 % eta = .03;
+
 % 
-% % 
 % %Parameter values for fig 1b
-phi = .00001;
+phi = .0001;
 psi = .001;
 mu = .15;
 gamma = .01; 
@@ -44,10 +44,12 @@ d = (nu_2*gamma)/(mu*eta);
 f = xi * c;
 
 %Initial conditions
-IC_N = .2;
+IC_N = 5;
 IC_A = .03;
-IC_E = .8;
+IC_E = .01;
 
+value = IC_A*((f*IC_N)/(IC_N+1)-1);
+fprintf('N = %.2f mg N/L\n', value);
 %initial condition vector 
 IC_fast = [IC_N IC_A];
 

@@ -3,15 +3,15 @@
 % Steady state analysis of NAE-model using exponential function as
 % inflow/outflow of nutrients functions
 clear all; clc; close all;
-n=15;
+n=50;
 domain = [0 n];
 algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS
 % 
 % % %Parameter values for fig 4a
-% phi = .002;
-% psi = .5;
+% phi = .0001;
+% psi = .1;
 % mu = .08;
 % gamma = .01; 
 % nu_1 = .2; 
@@ -33,9 +33,9 @@ EPScolordet = 1/255*[125,91,166]; % color for EPS
 % eta = .03;
 
 %Parameter values for fig 4c
-phi = .001;
+phi = .01;
 psi = .001;
-mu = .000088;
+mu = .08;
 gamma = .01; 
 nu_1 = .2; 
 nu_2 = .05; 
@@ -52,12 +52,13 @@ d = (nu_2*gamma)/(mu*eta);
 f = xi * c;
 
 %Initial conditions
-IC_N = .2;
+IC_N = 5;
 IC_A = .03;
-IC_E = .8;
+IC_E = .01;
 
 IC_exp = [IC_N IC_A IC_E];
-
+value = (IC_A/epsilon)*((f*IC_N)/(IC_N+1)-1);
+fprintf('N = %.2f mg N/L\n', value);
 %calculating NAE-model solution plots 
 [IVsol_exp, DVsol_exp] = ode45(@(t, y) DEdef_exp(t, y, a,b,c,f,d,epsilon), domain, IC_exp);
 N_sol_exp = DVsol_exp(:, 1)*gamma;
