@@ -91,7 +91,7 @@ ylim([0, maxnutrient * 1.2]);
 xlim([0, n]);
 
 xlabel('Time (days)', 'Color', 'k');
-ylabel('EPS (mg XGEQUIV/L)', 'Color', 'k');
+ylabel('EPS (mg XG/L)', 'Color', 'k');
 set(gca, 'FontSize', 20, 'XColor', 'k', 'YColor', 'k');
 
 legend('Location', 'northeast');
@@ -120,7 +120,7 @@ ylim([0, maxnutrient * 1.2]);
 xlim([0, n]);
 
 xlabel('Time (days)', 'Color', 'k');
-ylabel('Algae (mg chl A/L)', 'Color', 'k');
+ylabel('Algae (mg chl-a/L)', 'Color', 'k');
 set(gca, 'FontSize', 20, 'XColor', 'k', 'YColor', 'k');
 
 legend('Location', 'northeast');

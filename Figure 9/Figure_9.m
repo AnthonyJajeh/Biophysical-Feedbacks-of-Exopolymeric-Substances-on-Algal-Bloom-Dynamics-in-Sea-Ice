@@ -110,8 +110,8 @@ plot(f_vec, A_max, 'color', algaecolordet, 'linewidth', 3);
 hold on;
 plot(f_vec, E_max, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
 ylim([0, max([max(A_max); max(E_max)]) * 1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
-ylabel('max algae (mg chl A/L) & EPS (mg XGEQUIV/L)','FontSize',17,'Color','k');
-xlabel('f (growth rate of algae)', 'FontSize', 17);
+ylabel('max algae (mg chl-a/L) & EPS (mg XG/L)','FontSize',17,'Color','k');
+xlabel('\it{f} (growth rate of algae)', 'FontSize', 17);
 xlim([min(f_vec),max(f_vec)])
 
 

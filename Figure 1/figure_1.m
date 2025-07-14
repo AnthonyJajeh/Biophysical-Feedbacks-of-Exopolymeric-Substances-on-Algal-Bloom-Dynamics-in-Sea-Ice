@@ -13,28 +13,28 @@ algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS 
 
-% %Parameter values for fig 1a
-% phi = .0001;
-% psi = .1;
-% mu = .08;
-% gamma = .01; 
-% nu_1 = .2; 
-% nu_2 = .05; 
-% xi = .2;
-% delta = .007; 
-% eta = .03;
-
-% 
-% %Parameter values for fig 1b
+%Parameter values for fig 1a
 phi = .0001;
-psi = .001;
-mu = .15;
+psi = .1;
+mu = .08;
 gamma = .01; 
 nu_1 = .2; 
 nu_2 = .05; 
 xi = .2;
 delta = .007; 
-eta = .03;% 
+eta = .03;
+
+% % 
+% % %Parameter values for fig 1b
+% phi = .0001;
+% psi = .001;
+% mu = .15;
+% gamma = .01; 
+% nu_1 = .2; 
+% nu_2 = .05; 
+% xi = .2;
+% delta = .007; 
+% eta = .03;% 
 
 %nondimensional conversion values 
 a = phi/(gamma*delta);
@@ -74,7 +74,7 @@ set(gca, 'fontsize', 18, 'XColor', 'k', 'YColor', 'k'); % Set axis tick label co
 % Plot algae on the right y-axis
 yyaxis right;
 plot(IVsol_fast, A_sol_fast, 'color', algaecolordet, 'linewidth', 4);
-ylabel('algae (mg chl A/L)','Color','k');
+ylabel('algae (mg chl-a/L)','Color','k');
 set(gca, 'fontsize', 18, 'XColor', 'k', 'YColor', 'k'); % Set axis tick label colors to black
 
 % Set common properties

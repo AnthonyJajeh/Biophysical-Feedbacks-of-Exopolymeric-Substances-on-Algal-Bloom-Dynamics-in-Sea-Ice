@@ -106,9 +106,9 @@ plot(c_vec, A_max, 'color', algaecolordet, 'linewidth', 3);
 hold on;
 plot(c_vec, E_max, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
 ylim([0, max([max(A_max); max(E_max)]) * 1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
-ylabel('max algae (mg chl A/L) & EPS (mg XGEQUIV/L)','FontSize',17,'Color','k');
+ylabel('max algae (mg chl-a/L) & EPS (mg XG/L)','FontSize',17,'Color','k');
 
-xlabel('c (rate that algae uptake nutrients)', 'FontSize', 17);
+xlabel('\it{c} (rate that algae uptake nutrients)', 'FontSize', 17);
 xlim([min(c_vec),max(c_vec)])
 % Add legend
 set(gca, 'YColor', 'k'); % <-- Apply black color to right y-axis

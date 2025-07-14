@@ -3,13 +3,13 @@
 % Steady state analysis of NAE-model using exponential function as
 % inflow/outflow of nutrients functions
 clear all; clc; close all;
-n=50;
+n=20;
 domain = [0 n];
 algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS
 % 
-% % %Parameter values for fig 4a
+% %Parameter values for fig 4a
 % phi = .0001;
 % psi = .1;
 % mu = .08;
@@ -19,22 +19,11 @@ EPScolordet = 1/255*[125,91,166]; % color for EPS
 % xi = .2;
 % delta = .007; 
 % eta = .03;
-
+% 
 
 % %Parameter values for fig 4b
-% phi = .1;
-% psi = .5;
-% mu = .08;
-% gamma = .01; 
-% nu_1 = .2; 
-% nu_2 = .05; 
-% xi = .2;
-% delta = .007; 
-% eta = .03;
-
-%Parameter values for fig 4c
-phi = .01;
-psi = .001;
+phi = .1;
+psi = .5;
 mu = .08;
 gamma = .01; 
 nu_1 = .2; 
@@ -42,6 +31,17 @@ nu_2 = .05;
 xi = .2;
 delta = .007; 
 eta = .03;
+
+% %Parameter values for fig 4c
+% phi = .01;
+% psi = .001;
+% mu = .000088;
+% gamma = .01; 
+% nu_1 = .2; 
+% nu_2 = .05; 
+% xi = .2;
+% delta = .007; 
+% eta = .03;
 
 %nondimensional conversion values 
 epsilon = eta/delta;
@@ -86,7 +86,7 @@ plot(IVsol_exp, A_sol_exp, 'color', algaecolordet, 'linewidth', 3);
 hold on;
 plot(IVsol_exp, E_sol_exp, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
 ylim([0, max([A_sol_exp; E_sol_exp]) * 1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
-ylabel('algae (mg chl A/L) & EPS (mg XGEQUIV/L)','FontSize',20,'Color','k');
+ylabel('algae (mg chl-a/L) & EPS (mg XG/L)','FontSize',20,'Color','k');
 
 % Set common properties
 xlim([0, n]);

@@ -54,7 +54,7 @@ plot(IVsol_exp, A_sol_exp, 'color', algaecolordet, 'linewidth', 3);
 hold on;
 plot(IVsol_exp, E_sol_exp, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
 ylim([0, max([A_sol_exp; E_sol_exp]) * 1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
-ylabel('algae (mg chl A/L) & EPS (mg XGEQUIV/L)','FontSize',20,'Color','k');
+ylabel('algae (mg chl-a/L) & EPS (mg XG/L)','FontSize',20,'Color','k');
 
 % Set common properties
 xlim([0, n]);

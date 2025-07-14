@@ -52,8 +52,8 @@ b_vals = b_func(a_vals);
 %Two parameter bifurcation graph of a vs b
 figure;
 plot(a_vals, b_vals, 'LineWidth', 2,'Color','k');
-xlabel('a (growth rate of algae)','FontSize', 25);
-ylabel('b (outflow of nutrients)','FontSize',25);
+xlabel('\it{a} (growth rate of algae)','FontSize', 25);
+ylabel('\it{b} (outflow of nutrients)','FontSize',25);
 text(3, 15, 'Unstable', 'Color', 'black', 'FontSize', 20, 'FontWeight', 'bold');
 text(6, 5, 'Stable', 'Color', 'black', 'FontSize', 20, 'FontWeight', 'bold');
 ylim([0,max(b_vals)])
@@ -73,7 +73,7 @@ hold on;
 
 plot(IVsol_slow, DVsol_slow* mu, 'color', EPScolordet, 'linewidth', 3);
 ylim([0, max(DVsol_slow*mu) * 1.2]);
-ylabel('EPS (mg XGEQUIV/L)','Color','k');
+ylabel('EPS (mg XG/L)','Color','k');
 set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis tick label colors to black
 
 
