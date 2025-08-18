@@ -5,7 +5,7 @@
 clear all;clc;close all;
 
 %domain 
-n=15;
+n=500;
 domain = [0 n];
 
 % Define colors for deterministic results
@@ -15,9 +15,9 @@ EPScolordet = 1/255*[125,91,166]; % color for EPS
 
 
 %Parameter values for fig 3
-phi = .001;
-psi = .001;
-mu = .08;
+phi = .01;
+psi = .01;
+mu = .000008;
 gamma = .01; 
 nu_1 = .2; 
 nu_2 = .05; 
@@ -47,7 +47,7 @@ IC_slow = IC_E;
 IC_full = [IC_N IC_A IC_E];
 
 %Solving QSS fast-model 
-[IVsol_fast, DVsol_fast] = ode45(@(t, y) DEdef_fast(t, y, a,b,c,f,IC_E), domain, IC_fast);
+[IVsol_fast, DVsol_fast] = ode23s(@(t, y) DEdef_fast(t, y, a,b,c,f,IC_E), domain, IC_fast);
 N_sol_fast = DVsol_fast(:, 1)*gamma;
 A_sol_fast = DVsol_fast(:, 2)*gamma;
 
@@ -56,13 +56,13 @@ A_sol_fast = DVsol_fast(:, 2)*gamma;
 
 
 %calculating full-model solution plots 
-[IVsol_exp, DVsol_exp] = ode45(@(t, y) DEdef_exp(t, y, a,b,c,f,d,epsilon), domain, IC_full);
+[IVsol_exp, DVsol_exp] = ode23s(@(t, y) DEdef_exp(t, y, a,b,c,f,d,epsilon), domain, IC_full);
 N_sol_exp = DVsol_exp(:, 1)*gamma;
 A_sol_exp = DVsol_exp(:, 2)*gamma;
 E_sol_exp = DVsol_exp(:, 3)*mu;
 
 %Solving tracking-model using ode23
-[IVsol_tracking, DVsol_tracking] = ode45(@(t, y) DEdef_tracking(t, y, a,b,c,f,h), domain, IC_fast);
+[IVsol_tracking, DVsol_tracking] = ode23s(@(t, y) DEdef_tracking(t, y, a,b,c,f,h), domain, IC_fast);
 N_sol_tracking = DVsol_tracking(:, 1)*gamma;
 A_sol_tracking = DVsol_tracking(:, 2)*gamma;
 

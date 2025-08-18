@@ -3,8 +3,8 @@
 % Steady state analysis of NAE-model using exponential function as
 % inflow/outflow of nutrients functions
 clear all; clc; close all;
-n=20;
-domain = [0 n];
+n=25;
+
 algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS
@@ -14,7 +14,7 @@ EPScolordet = 1/255*[125,91,166]; % color for EPS
 % psi = .1;
 % mu = .08;
 % gamma = .01; 
-% nu_1 = .2; 
+% nu = .2; 
 % nu_2 = .5; 
 % xi = .2;
 % delta = .007; 
@@ -22,22 +22,22 @@ EPScolordet = 1/255*[125,91,166]; % color for EPS
 % 
 
 % %Parameter values for fig 4b
-phi = .1;
-psi = .5;
-mu = .08;
-gamma = .01; 
-nu_1 = .2; 
-nu_2 = .05; 
-xi = .2;
+phi = .01;
+psi = .01;
+nu = .2; 
+rho = .05; 
 delta = .007; 
 eta = .03;
+gamma = .01; 
+xi = .2;
+mu = .08;
 
 % %Parameter values for fig 4c
 % phi = .01;
 % psi = .001;
 % mu = .000088;
 % gamma = .01; 
-% nu_1 = .2; 
+% nu = .2; 
 % nu_2 = .05; 
 % xi = .2;
 % delta = .007; 
@@ -47,12 +47,13 @@ eta = .03;
 epsilon = eta/delta;
 a = phi/(gamma*delta);
 b = psi/delta;
-c = nu_1/delta;
-d = (nu_2*gamma)/(mu*eta);
+c = nu/delta;
+d = (rho*gamma)/(mu*eta);
 f = xi * c;
 
+domain = [0 n];
 %Initial conditions
-IC_N = 5;
+IC_N = .3;
 IC_A = .03;
 IC_E = .01;
 
@@ -60,11 +61,11 @@ IC_exp = [IC_N IC_A IC_E];
 value = (IC_A/epsilon)*((f*IC_N)/(IC_N+1)-1);
 fprintf('N = %.2f mg N/L\n', value);
 %calculating NAE-model solution plots 
-[IVsol_exp, DVsol_exp] = ode45(@(t, y) DEdef_exp(t, y, a,b,c,f,d,epsilon), domain, IC_exp);
-N_sol_exp = DVsol_exp(:, 1)*gamma;
-A_sol_exp = DVsol_exp(:, 2)*gamma;
-E_sol_exp = DVsol_exp(:, 3)*mu;
-
+[IVsol_exp, DVsol_exp] = ode23s(@(t, y) DEdef_exp(t, y, a,b,c,f,d,epsilon), domain, IC_exp);
+N_sol_exp = DVsol_exp(:, 1);
+A_sol_exp = DVsol_exp(:, 2);
+E_sol_exp = DVsol_exp(:, 3);
+IVsol_exp = IVsol_exp;
 
 
 %plotting solution curves of full-model 
@@ -110,8 +111,8 @@ A = D(2);
 E = D(3);
 
 %set of odes
-dNdt = ((a*exp(-E)-(c*A*N)/(N+1)-b*N*exp(-E)))/epsilon;
-dAdt = ((f*N*A)/(1 + N) - A)/epsilon;
+dNdt = (1/epsilon)* (a*exp(-E)-(c*A*N)/(N+1)-b*N*exp(-E));
+dAdt = (1/epsilon)* ((f*N*A)/(N+1)-A);
 dEdt = d*A - E;
 
 % odes in vector form

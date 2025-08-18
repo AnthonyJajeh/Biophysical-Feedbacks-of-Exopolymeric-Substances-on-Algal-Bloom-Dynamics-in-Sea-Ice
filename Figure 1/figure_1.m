@@ -1,12 +1,10 @@
 %Author:Anthony Jajeh 
-%Date: June 3rd, 2025
+%Date: Aug 18, 2025
 %Figure 1 by using MATLAB built
 %in ODE solver
 clear all;clc;close all;
 
-%domain 
-n=15;
-domain = [0 n];
+
 
 % Define colors for deterministic results
 algaecolordet = 1/255*[118,176,65]; % color for algae (green)
@@ -14,12 +12,12 @@ nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS 
 
 %Parameter values for fig 1a
-phi = .0001;
-psi = .1;
+phi = .001;
+psi = .01;
 mu = .08;
 gamma = .01; 
-nu_1 = .2; 
-nu_2 = .05; 
+nu = .2; 
+rho = .05; 
 xi = .2;
 delta = .007; 
 eta = .03;
@@ -31,33 +29,40 @@ eta = .03;
 % mu = .15;
 % gamma = .01; 
 % nu_1 = .2; 
-% nu_2 = .05; 
+% rho = .05; 
 % xi = .2;
 % delta = .007; 
 % eta = .03;% 
 
+
+
 %nondimensional conversion values 
 a = phi/(gamma*delta);
 b = psi/delta;
-c = nu_1/delta;
-d = (nu_2*gamma)/(mu*eta);
+c = nu/delta;
+d = (rho*gamma)/(mu*eta);
 f = xi * c;
+epsilon = eta/delta;
+
+%domain 
+n=5;
+domain = [0 n]*epsilon;
 
 %Initial conditions
-IC_N = 5;
-IC_A = .03;
-IC_E = .01;
+IC_N = .3/gamma;
+IC_A = .03/gamma;
+IC_E = .01/mu;
 
-value = IC_A*((f*IC_N)/(IC_N+1)-1);
-fprintf('N = %.2f mg N/L\n', value);
 %initial condition vector 
 IC_fast = [IC_N IC_A];
 
 %scaled values
 %Solving QSS fast-model 
-[IVsol_fast, DVsol_fast] = ode45(@(t, y) DEdef_fast(t, y, a,b,c,f,IC_E), domain, IC_fast);
+[IVsol_fast, DVsol_fast] = ode23s(@(t, y) DEdef_fast(t, y, a,b,c,f,IC_E), domain, IC_fast);
 N_sol_fast = DVsol_fast(:, 1)*gamma;
 A_sol_fast = DVsol_fast(:, 2)*gamma;
+IVsol_fast = IVsol_fast/epsilon;
+
 
 % Create a new figure
 fig = figure;
