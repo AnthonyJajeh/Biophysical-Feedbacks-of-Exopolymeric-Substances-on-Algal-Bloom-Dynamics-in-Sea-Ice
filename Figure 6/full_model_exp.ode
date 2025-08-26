@@ -1,18 +1,19 @@
 #Author: Anthony Jajeh 
 #Full model for use of xpp.
 #Edited June 4th, 2025
-params alpha = 14.28 c = 28.57 b = .14 f = 5.71 d=180 epsilon = 4.29
+params d=225 c = 28.57 alpha = 14.28 b = 1.4 f = 5.7 epsilon = 4.29
 
 
+E' = d*A-E
 A' = ((f*A*N)/(N+1)-A)/epsilon
 N' = (alpha*exp(-E)-(c*N*A)/(1+N)-(b*N)*exp(-E))/epsilon
-E' = d*A-E
 
-init A=.2, N=.003, E=.8
-@ TOTAL=100,DT=.05,xlo=0,xhi=.7,ylo=-.01,yhi=.4
-@ xplot=N,yplot=A
+
+init A=.2, N=.3, E=.8
+@ TOTAL=100,DT=.05,xlo=0,xhi=2,ylo=-.01,yhi=6
+@ xplot=N,yplot=E
 @meth=cvode
-@ dsmin=.01,dsmax=0.02,parmin=0,parmax=30,autoxmin=0,autoxmax=30
+@ dsmin=.01,dsmax=0.02,parmin=0,parmax=30,autoxmin=0,autoxmax=250
 @ colormap=5
-@ autoymax=.05,autoymin=0
+@ autoymax=6,autoymin=0
 Done

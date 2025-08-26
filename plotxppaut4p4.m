@@ -16,17 +16,17 @@ colorRed = 'r'; colorBlue = 'b'; colorBlack = 'k'; colorNone = 'none';
 colorGreen = 'g'; colorYellow = [.8 .8 0]; colorOlive = [0 .7 .7]; % colorCyan = 'c';
 LineDefaultCell = {
     [1 0],'Stable Equilibria',...
-        '-',colorRed,1,'none',6,colorRed,colorNone,5,'EP-';
+        '-',colorRed,1,'none',6,colorRed,colorNone,5,'Stable Equilibria';
     [2 0],'Unstable Equilibria',...
-        '-',colorBlack,1,'none',6,colorBlack,colorNone,5,'EP+'; 
+        '-',colorBlack,1,'none',6,colorBlack,colorNone,5,'Unstable Equilibria'; 
     [3 0],'Stable Periodic Orbits',...
-        'none',colorGreen,1,'o',6,colorNone,colorGreen,5,'PO-';
+        'none',colorGreen,1,'o',6,colorNone,colorGreen,5,'Stable Periodic Orbits';
     [4 0],'Unstable Periodic Orbits',...
         'none',colorBlue,1,'o',6,colorBlue,colorNone,5,'PO+';
     [2 5],'Branch Points',...
         '-',colorOlive,1,'none',6,colorOlive,colorNone,5,'BP';
-    [2 3],'Hopft Bifurcation',...
-        '-',colorBlue,1,'none',6,colorBlue,colorNone,5,'HB';
+    [2 3],'Hopf Bifurcation',...
+        '-',colorBlue,1,'none',6,colorBlue,colorNone,5,'Hopf Bifurcation';
     [2 1],'Limit Points',...
         '-',colorRed,1,'none',6,colorRed,colorNone,5,'LP';
     [4 7],'Periodic Orbits',...
@@ -1011,6 +1011,58 @@ switch opt
         myPrompt(info,'UPDATE');
         return;
 end
+end
+
+
+function nice_graphing(fname, fig)
+    if nargin < 2 || ~ishandle(fig) || ~strcmp(get(fig,'Type'),'figure')
+        fig = gcf; % fall back safely
+    end
+
+    % --- Layout / sizing ---
+    picturewidth = 20;   % cm
+    hw_ratio     = 0.8;  % height/width
+    set(fig,'Units','centimeters','Position',[3 3 picturewidth hw_ratio*picturewidth]);
+
+    % --- Typography & boxes (only on relevant objects) ---
+    ax  = findall(fig,'Type','axes');          % axes (includes colorbars)
+    txt = findall(fig,'Type','text');          % text objects
+    lgd = findall(fig,'Type','legend');        % legend(s)
+
+    % Font sizes
+    set([ax; lgd; txt],'FontSize',24);
+
+    % Boxes on axes only (skip UI controls etc.)
+    set(ax,'Box','on');
+
+    % LaTeX only where it makes sense (axes ticks, text, legend)
+    % NOTE: If any label/legend contains & or _ etc., escape them or set 'Interpreter','none' for that item.
+    set(ax,'TickLabelInterpreter','latex');
+    set(txt,'Interpreter','latex');
+    try
+        set(lgd,'Interpreter','latex');
+    catch
+        % ok if no legend
+    end
+
+    % --- Legend housekeeping (only if it exists) ---
+    if ~isempty(lgd) && all(ishandle(lgd))
+        set(lgd,'Box','off');  % borderless legend
+        % Optional: ensure best placement
+        try, set(lgd,'Location','best'); end
+    end
+
+    % --- Paper size for vector/PDF export ---
+    pos = get(fig,'Position');
+    set(fig,'PaperPositionMode','Auto','PaperUnits','centimeters','PaperSize',[pos(3), pos(4)]);
+
+    % --- Export: choose ONE of the following ---
+    % 1) Raster PNG (recommended for slides)
+    exportgraphics(fig, strcat(fname,'.png'), 'Resolution', 300);
+
+    % 2) Or TRUE vector for papers (uncomment one of these and comment the PNG line)
+    % exportgraphics(fig, strcat(fname,'.pdf'), 'ContentType','vector');
+    % exportgraphics(fig, strcat(fname,'.svg'), 'ContentType','vector');
 end
 
 %% ====DOC====

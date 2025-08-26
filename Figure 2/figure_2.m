@@ -1,5 +1,5 @@
 %Author:Anthony Jajeh 
-%Date: June 5th, 2024
+%Date: Aug 19th, 2025
 %slow-Quasi-steady-state figures by using MATLAB built
 %Implicitly solving for two parameter bifurcation regime of c_p and b to
 %determine the stability of the equilibria
@@ -9,30 +9,26 @@ clear all; clc; close all;
 EPScolordet = 1/255*[125,91,166]; % Color for EPS graph
 
 %Parameters
-n=25;
+n=10;
 domain = [0 n];
 
 %Parameter values for fig 2
-phi = .001;
-psi = .001;
-mu = .08;
+phi = .01;
+psi = .01;
+mu = .001;
 gamma = .01; 
-nu_1 = .2; 
-nu_2 = .05; 
+nu = .2; 
+rho = .75; 
 xi = .2;
 delta = .007; 
 eta = .03;
 
 
+
 %nondimensional conversion values 
-c = nu_1/delta;
-d = (nu_2*gamma)/(mu*eta);
+c = nu/delta;
+d = (rho*gamma)/(mu*eta);
 f = xi * c;
-
-
-f = 3; %Inflow of nturients
-c = 1.1; %Nutrient uptake by algae
-d = 1.3; %Growth rate of EPS due to algae
 
 % Solving for b as a function of a,c,f, and d to determine the stability of equilibrium point 
 % If the inside of the LambertW= -1/e then LambertW(-1/e)=-1
@@ -50,36 +46,50 @@ b_func = matlabFunction(b_solution, 'Vars', a);
 a_vals = linspace(1, 10, 500);
 b_vals = b_func(a_vals);
 %Two parameter bifurcation graph of a vs b
-figure;
+fig2 = figure;
 plot(a_vals, b_vals, 'LineWidth', 2,'Color','k');
-xlabel('\it{a} (growth rate of algae)','FontSize', 25);
-ylabel('\it{b} (outflow of nutrients)','FontSize',25);
-text(3, 15, 'Unstable', 'Color', 'black', 'FontSize', 20, 'FontWeight', 'bold');
-text(6, 5, 'Stable', 'Color', 'black', 'FontSize', 20, 'FontWeight', 'bold');
+xlabel('\it a \rm (growth rate of algae)','FontSize', 25);
+ylabel('\it b \rm (outflow of nutrients)','FontSize',25);
+text(1.5, 20, 'Unstable', 'Color', 'black', 'FontSize', 20, 'FontWeight', 'bold');
+text(3, 7, 'Stable', 'Color', 'black', 'FontSize', 20, 'FontWeight', 'bold');
 ylim([0,max(b_vals)])
 xlim([1,max(a_vals)])
 
 %Solving dEdt using ode15s
 %nondimensional conversion values 
+
+phi = .01;
+psi = .01;
+mu = .001;
+gamma = .01; 
+nu = .2; 
+rho = .75; 
+xi = .2;
+delta = .007; 
+eta = .03;
+
 a = phi/(gamma*delta);
 b = psi/delta;
-IC_E = .79 ; 
-[IVsol_slow, DVsol_slow] = ode15s(@(t, E) DEdef(t, E, a,b,c,f,d), domain, IC_E);
+c = nu/delta;
+d = (rho*gamma)/(mu*eta);
+f = xi * c;
+IC_E = .001/mu; 
+[IVsol_slow, DVsol_slow] = ode23s(@(t, E) DEdef(t, E, a,b,c,f,d), domain, IC_E);
 
 % Solution plot for dEdt
-fig = figure;
-set(fig, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
+fig1 = figure;
+set(fig1, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
 hold on;
 
-plot(IVsol_slow, DVsol_slow* mu, 'color', EPScolordet, 'linewidth', 3);
-ylim([0, max(DVsol_slow*mu) * 1.2]);
-ylabel('EPS (mg XG/L)','Color','k');
+plot(IVsol_slow, DVsol_slow, 'color', EPScolordet, 'linewidth', 3);
+ylim([0, max(DVsol_slow) * 1.2]);
+ylabel('EPS','Color','k');
 set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis tick label colors to black
 
 
 % Set common properties
 xlim([0, n]);
-xlabel('time (days)');
+xlabel('time');
 set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis tick label colors to black
 
 
@@ -93,9 +103,33 @@ hold off;
 set(gcf, 'units', 'inches', 'Position', [2, 2, 6, 4]);
 set(gcf, 'PaperSize', [10, 6]); % Set the paper to have width 6 and height 4
 
+fname1 = 'fig2a';
+fname2= 'fig2b';
+nice_graphing(fname2, fig2)
+nice_graphing(fname1,fig1)
+
+function nice_graphing(fname, fig)
+picturewidth = 20; % set this parameter and keep it forever
+hw_ratio = .8; % feel free to play with this ratio
+set(findall(fig,'-property','FontSize'),'FontSize',24) % adjust fontsize to your document
+set(findall(fig,'-property','Box'),'Box','on') % optional
+set(findall(fig,'-property','Interpreter'),'Interpreter','latex')
+set(findall(fig,'-property','TickLabelInterpreter'),'TickLabelInterpreter','latex')
+set(fig,'Units','centimeters','Position',[3 3 picturewidth hw_ratio*picturewidth])
+pos = get(fig,'Position');
+set(fig,'PaperPositionMode','Auto','PaperUnits','centimeters','PaperSize',[pos(3), pos(4)])
+ lgd = findall(fig, 'Type', 'Legend');
+    set(lgd, 'Box', 'off');     % ensure no border if a legend exists
+%print(hfig,fname,'-dpdf','-painters','-fillpage')
+%print(hfig,fname,'-dpng','-painters')
+%set(hfig, 'Position', get(0, 'Screensize'));
+exportgraphics(fig, strcat(fname,'.png'), 'ContentType', 'vector');
+end
+
+
 %Defining the dEdt ODE
 function [dEdt] = DEdef(~,E,a,b,c,f,d)
 
 %set of odes
-dEdt = (d*f*(f*a-a-b))/(c*(f-1))*exp(-E)-E;
+dEdt = (d*f*(a*f-a-b))/(exp(E)*c*(f-1))-E;
 end

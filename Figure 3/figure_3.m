@@ -1,11 +1,11 @@
 %Author:Anthony Jajeh 
-%Date: Febuary 5th, 2024
+%Date: Aug 18, 2025
 %Quasi-steady-state figures by using MATLAB built
 %in ODE solver
 clear all;clc;close all;
 
 %domain 
-n=500;
+n=300;
 domain = [0 n];
 
 % Define colors for deterministic results
@@ -14,84 +14,94 @@ nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS 
 
 
-%Parameter values for fig 3
-phi = .01;
+% %Parameter values for fig 3 a/b<
+% phi = .0001;
+% psi = .5;
+% mu = .001;
+% gamma = .01; 
+% nu = .2; 
+% rho = .75; 
+% xi = .2;
+% delta = .007; 
+% eta = .03;
+% sigma = .8; % example scaling factor, adjust as needed
+
+% % %Parameter values for fig 3 a/b>
+phi = .0001;
 psi = .01;
-mu = .000008;
+mu = .001;
 gamma = .01; 
-nu_1 = .2; 
-nu_2 = .05; 
+nu = .2; 
+rho = .75; 
 xi = .2;
 delta = .007; 
 eta = .03;
 sigma = .8; % example scaling factor, adjust as needed
 
-
 %nondimensional conversion values 
 epsilon = eta/delta;
 a = phi/(gamma*delta);
 b = psi/delta;
-c = nu_1/delta;
-d = (nu_2*gamma)/(mu*eta);
+c = nu/delta;
+d = (rho*gamma)/(mu*eta);
 f = xi * c;
 h = (sigma*gamma)/mu;
 
 %Initial conditions
-IC_N = 10;
-IC_A = .03;
-IC_E = .01;
+IC_N = .005/gamma;
+IC_A = .003/gamma;
+IC_E = .001/mu;
 
 %initial condition vector 
 IC_fast = [IC_N IC_A];
 IC_slow = IC_E;
 IC_full = [IC_N IC_A IC_E];
 
+opts_slow = odeset('RelTol',1e-7,'AbsTol',1e-9,'InitialStep',1e-4,'MaxStep',1, ...
+                   'NonNegative',[1 1 1]);
 %Solving QSS fast-model 
-[IVsol_fast, DVsol_fast] = ode23s(@(t, y) DEdef_fast(t, y, a,b,c,f,IC_E), domain, IC_fast);
-N_sol_fast = DVsol_fast(:, 1)*gamma;
-A_sol_fast = DVsol_fast(:, 2)*gamma;
-
-%Solving QSS slow-model
-[IVsol_slow, DVsol_slow] = ode45(@(t, E) DEdef_slow(t, E, a,b,c,f,d), domain, IC_E);
+[IVsol_slow, DVsol_slow] = ode15s(@(t, y) DEdef_slow(t, y, a,b,c,f,d,IC_E), domain, IC_full,opts_slow);
+N_sol_slow = DVsol_slow(:, 1);
+A_sol_slow = DVsol_slow(:, 2);
+E_sol_slow = DVsol_slow(:,3);
 
 
 %calculating full-model solution plots 
 [IVsol_exp, DVsol_exp] = ode23s(@(t, y) DEdef_exp(t, y, a,b,c,f,d,epsilon), domain, IC_full);
-N_sol_exp = DVsol_exp(:, 1)*gamma;
-A_sol_exp = DVsol_exp(:, 2)*gamma;
-E_sol_exp = DVsol_exp(:, 3)*mu;
+N_sol_exp = DVsol_exp(:, 1);
+A_sol_exp = DVsol_exp(:, 2);
+E_sol_exp = DVsol_exp(:, 3);
 
-%Solving tracking-model using ode23
-[IVsol_tracking, DVsol_tracking] = ode23s(@(t, y) DEdef_tracking(t, y, a,b,c,f,h), domain, IC_fast);
-N_sol_tracking = DVsol_tracking(:, 1)*gamma;
-A_sol_tracking = DVsol_tracking(:, 2)*gamma;
+%Solving fast-model using ode23
+[IVsol_fast, DVsol_fast] = ode23s(@(t, y) DEdef_fast(t, y, a,b,c,f,h), domain, IC_fast);
+N_sol_fast = DVsol_fast(:, 1);
+A_sol_fast = DVsol_fast(:, 2);
 
 E_plot = IC_E * ones(size(E_sol_exp));
 
-fig = figure;
+fig1 = figure;
 hold on;
 
 % Plot EPS from slow model
-plot(IVsol_slow, DVsol_slow*mu, 'Color', EPScolordet, 'LineWidth', 2, 'LineStyle', '--', 'DisplayName', 'Slow Model');
-
-% Plot EPS from full model
-plot(IVsol_exp, E_sol_exp, 'Color', EPScolordet, 'LineWidth', 2, 'LineStyle', '-', 'DisplayName', 'Full Model');
-
-%Plot EPS from fast-model
-plot(IVsol_exp, E_plot*mu, 'Color', EPScolordet, 'LineWidth', 2,'LineStyle', ":", 'DisplayName', 'Fast Model');
+plot(IVsol_slow, DVsol_slow(:,3), 'Color', EPScolordet, 'LineWidth', 2, 'LineStyle', '--', 'DisplayName', 'Regime 1');
 
 sigma = .8; % example scaling factor, adjust as needed
-E_tracking = sigma * DVsol_tracking(:, 2)*gamma;
+E_tracking = sigma * DVsol_fast(:, 2);
 %Plot EPS from tracking model E(t) = sigma * A(t)
-plot(IVsol_tracking, E_tracking, 'Color', EPScolordet, 'LineWidth', 2,'LineStyle', '-.', 'DisplayName', 'Tracking Model');
+plot(IVsol_fast, E_tracking, 'Color', EPScolordet, 'LineWidth', 2,'LineStyle', '-.', 'DisplayName', 'Regime 2');
+
+
+% Plot EPS from full model
+plot(IVsol_exp, E_sol_exp, 'Color', EPScolordet, 'LineWidth', 2, 'LineStyle', '-', 'DisplayName', 'Regime 3');
+
 
 % Set axes limits dynamically based on max EPS value from all
-maxnutrient = max([DVsol_slow*mu; E_sol_exp; E_tracking]);
+maxnutrient = max([E_sol_exp; DVsol_slow(:,3)]);
 ylim([0, maxnutrient * 1.2]);
 xlim([0, n]);
 
-xlabel('Time (days)', 'Color', 'k');
-ylabel('EPS (mg XG/L)', 'Color', 'k');
+xlabel('time', 'Color', 'k');
+ylabel('EPS', 'Color', 'k');
 set(gca, 'FontSize', 20, 'XColor', 'k', 'YColor', 'k');
 
 legend('Location', 'northeast');
@@ -102,25 +112,27 @@ hold off;
 set(gcf, 'Units', 'inches', 'Position', [2, 2, 6, 4]);
 set(gcf, 'PaperSize', [10, 6]);
 
-fig = figure;
+fig2 = figure;
 hold on;
 
-% Plot algae from full model
-plot(IVsol_exp, A_sol_exp, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', '-',  'DisplayName', 'Full Model');
+
+% Plot aglae from slow model 
+plot(IVsol_fast, A_sol_fast, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', '-.',  'DisplayName', 'Regime 1');
 
 % Plot algae from fast model
-plot(IVsol_fast, A_sol_fast, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', ':',  'DisplayName', 'Fast Model');
+plot(IVsol_slow, A_sol_slow, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', ':',  'DisplayName', 'Regime 2');
 
-% Plot aglae from Tracking model 
-plot(IVsol_tracking, A_sol_tracking, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', '-.',  'DisplayName', 'Tracking Model');
+% Plot algae from full model
+plot(IVsol_exp, A_sol_exp, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', '-',  'DisplayName', 'Regime 3');
+
 
 % Set axes limits dynamically based on max algae value from all
-maxnutrient = max([A_sol_exp; A_sol_tracking; A_sol_fast]);
+maxnutrient = max([A_sol_exp; A_sol_fast; A_sol_slow]);
 ylim([0, maxnutrient * 1.2]);
 xlim([0, n]);
 
-xlabel('Time (days)', 'Color', 'k');
-ylabel('Algae (mg chl-a/L)', 'Color', 'k');
+xlabel('time', 'Color', 'k');
+ylabel('algae', 'Color', 'k');
 set(gca, 'FontSize', 20, 'XColor', 'k', 'YColor', 'k');
 
 legend('Location', 'northeast');
@@ -133,25 +145,26 @@ set(gcf, 'PaperSize', [10, 6]);
 
 
 %Plot for figure 3c
-fig = figure;
+fig3 = figure;
 hold on;
 
-% Plot nutrient from full model
-plot(IVsol_exp, N_sol_exp, 'Color', nutrientcolordet, 'LineWidth', 2,'LineStyle', '-',  'DisplayName', 'Full Model');
 
 % Plot nutrient from fast model
-plot(IVsol_fast, N_sol_fast, 'Color', nutrientcolordet, 'LineWidth', 2,'LineStyle', ':',  'DisplayName', 'Fast Model');
+plot(IVsol_slow, N_sol_slow, 'Color', nutrientcolordet, 'LineWidth', 2,'LineStyle', ':',  'DisplayName', 'Regime 1');
 
 % Plot nutrient from Tracking model 
-plot(IVsol_tracking, N_sol_tracking, 'Color', nutrientcolordet, 'LineWidth', 2,'LineStyle', '-.',  'DisplayName', 'Tracking Model');
+plot(IVsol_fast, N_sol_fast, 'Color', nutrientcolordet, 'LineWidth', 2,'LineStyle', '-.',  'DisplayName', 'Regime 2');
+
+% Plot nutrient from full model
+plot(IVsol_exp, N_sol_exp, 'Color', nutrientcolordet, 'LineWidth', 2,'LineStyle', '-',  'DisplayName', 'Regime 3');
 
 % Set axes limits dynamically based on max algae value from all
-maxnutrient = max([N_sol_exp; N_sol_tracking; N_sol_fast]);
+maxnutrient = max([N_sol_exp; N_sol_fast; N_sol_slow]);
 ylim([0, maxnutrient * 1.2]);
 xlim([0, n]);
 
-xlabel('Time (days)', 'Color', 'k');
-ylabel('Nutrients (mg N/L)', 'Color', 'k');
+xlabel('time', 'Color', 'k');
+ylabel('nutrients', 'Color', 'k');
 set(gca, 'FontSize', 20, 'XColor', 'k', 'YColor', 'k');
 
 legend('Location', 'northeast');
@@ -167,9 +180,34 @@ set(gcf, 'PaperSize', [10, 6]);
 
 
 
+fname1 = 'fig3f';
+fname2= 'fig3e';
+fname3 = 'fig3d';
+nice_graphing(fname1,fig1)
+nice_graphing(fname2, fig2)
+nice_graphing(fname3,fig3)
 
-%Defining QSS-fast-model
-function [Dode] = DEdef_fast(I,D,a,b,c,f,E_0)
+function nice_graphing(fname, fig)
+picturewidth = 20; % set this parameter and keep it forever
+hw_ratio = .8; % feel free to play with this ratio
+set(findall(fig,'-property','FontSize'),'FontSize',24) % adjust fontsize to your document
+set(findall(fig,'-property','Box'),'Box','on') % optional
+set(findall(fig,'-property','Interpreter'),'Interpreter','latex')
+set(findall(fig,'-property','TickLabelInterpreter'),'TickLabelInterpreter','latex')
+set(fig,'Units','centimeters','Position',[3 3 picturewidth hw_ratio*picturewidth])
+pos = get(fig,'Position');
+set(fig,'PaperPositionMode','Auto','PaperUnits','centimeters','PaperSize',[pos(3), pos(4)])
+lgd = findall(fig, 'Type', 'Legend');
+    set(lgd, 'Box', 'off');     % ensure no border if a legend exists
+%print(hfig,fname,'-dpdf','-painters','-fillpage')
+%print(hfig,fname,'-dpng','-painters')
+%set(hfig, 'Position', get(0, 'Screensize'));
+exportgraphics(fig, strcat(fname,'.png'), 'ContentType', 'vector');
+end
+
+
+%Defining QSS-slow-model
+function [Dode] = DEdef_slow(I,D,a,b,c,f,d,E_0)
 %I- indepenedent variable
 %D - dependent variable
 
@@ -177,24 +215,17 @@ function [Dode] = DEdef_fast(I,D,a,b,c,f,E_0)
 % naming the ode values I want
 N = D(1);
 A = D(2);
+E = D(3);
 
 %set of odes
 dNdt = a*exp(-E_0)-(c*N*A)/(N+1) - b*N*exp(-E_0);
 dAdt = (f*N*A)/(N+1)-A;
-
+dEdt = (d*f*(a*f-a-b))/(exp(E)*c*(f-1));
 % odes in vector form
-Dode = [dNdt; dAdt];
+Dode = [dNdt; dAdt;dEdt];
 end
 
-%Defining the dEdt ODE
-function [dEdt] = DEdef_slow(~,E,a,b,c,f,d)
-
-%set of odes
-dEdt = (d*f*(f*a-a-b))/(c*(f-1))*exp(-E)-E;
-end
-
-
-%Defining NAE-full
+%Defining full-model
 function [Dode] = DEdef_exp(I,D,a,b,c,f,d,epsilon)
 %I- indepenedent variable
 %D - dependent variable
@@ -215,7 +246,7 @@ Dode = [dNdt; dAdt; dEdt];
 end
 
 %Defining full model with E(t) = sigma * A(t)
-function [Dode] = DEdef_tracking(I,D,a,b,c,f,h)
+function [Dode] = DEdef_fast(I,D,a,b,c,f,h)
 %I- indepenedent variable
 %D - dependent variable
 
