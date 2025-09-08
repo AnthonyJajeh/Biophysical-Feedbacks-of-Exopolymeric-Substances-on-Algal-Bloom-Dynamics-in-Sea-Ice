@@ -22,11 +22,11 @@ EPScolordet = 1/255*[125,91,166]; % color for EPS
 % delta = .007; 
 % eta = .03;
 
-% % 
+% 
 % % %Parameter values for fig 1a
 phi = .0001;
 psi = .05;
-mu = .08;
+mu = .001;
 gamma = .01; 
 nu = .2; 
 rho = .75; 
@@ -45,13 +45,13 @@ f = xi * c;
 epsilon = eta/delta;
 
 %domain 
-n=25;
+n=10;
 domain = [0 n];
 
 %Initial conditions
-IC_N = .005/gamma;
-IC_A = .003/gamma;
-IC_E = .001/mu;
+IC_N = .2/gamma;
+IC_A = .03/gamma;
+IC_E = .8;
 
 %initial condition vector 
 IC_fast = [IC_N IC_A];
@@ -96,7 +96,7 @@ hold off;
 % Set the figure size and save as PDF, PNG, and FIG
 set(gcf, 'units', 'inches', 'Position', [2, 2, 6, 4]);
 set(gcf, 'PaperSize', [10, 6]); % Set the paper to have width 6 and height 4
-fname = 'fig1a';
+fname = 'fig1b';
 nice_graphing(fname, fig)
 
 function nice_graphing(fname, fig)

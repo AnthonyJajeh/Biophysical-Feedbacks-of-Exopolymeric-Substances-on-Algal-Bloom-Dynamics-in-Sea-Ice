@@ -33,7 +33,7 @@ eta = .03;
 % eta = .03;
 
 % %Parameter values for fig 4c
-% phi = .001;
+% phi = .01;
 % psi = .01;
 % mu = .001;
 % gamma = .01; 
@@ -53,9 +53,9 @@ epsilon = eta/delta;
 
 domain = [0 n];
 %Initial conditions
-IC_N = .005/gamma;
-IC_A = .003/gamma;
-IC_E = .001/mu;
+IC_N = .2/gamma;
+IC_A = .03/gamma;
+IC_E = .8/mu;
 
 IC_exp = [IC_N IC_A IC_E];
 %calculating NAE-model solution plots 

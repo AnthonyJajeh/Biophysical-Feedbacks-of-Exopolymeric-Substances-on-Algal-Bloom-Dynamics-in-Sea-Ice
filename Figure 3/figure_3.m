@@ -15,20 +15,8 @@ EPScolordet = 1/255*[125,91,166]; % color for EPS
 
 
 % %Parameter values for fig 3 a/b<
-% phi = .0001;
-% psi = .5;
-% mu = .001;
-% gamma = .01; 
-% nu = .2; 
-% rho = .75; 
-% xi = .2;
-% delta = .007; 
-% eta = .03;
-% sigma = .8; % example scaling factor, adjust as needed
-
-% % %Parameter values for fig 3 a/b>
 phi = .0001;
-psi = .01;
+psi = .5;
 mu = .001;
 gamma = .01; 
 nu = .2; 
@@ -37,6 +25,18 @@ xi = .2;
 delta = .007; 
 eta = .03;
 sigma = .8; % example scaling factor, adjust as needed
+
+% % %Parameter values for fig 3 a/b>
+% phi = .0001;
+% psi = .01;
+% mu = .001;
+% gamma = .01; 
+% nu = .2; 
+% rho = .75; 
+% xi = .2;
+% delta = .007; 
+% eta = .03;
+% sigma = .8; % example scaling factor, adjust as needed
 
 %nondimensional conversion values 
 epsilon = eta/delta;
@@ -48,9 +48,9 @@ f = xi * c;
 h = (sigma*gamma)/mu;
 
 %Initial conditions
-IC_N = .005/gamma;
-IC_A = .003/gamma;
-IC_E = .001/mu;
+IC_N = .2/gamma;
+IC_A = .03/gamma;
+IC_E = .8/mu;
 
 %initial condition vector 
 IC_fast = [IC_N IC_A];
@@ -67,13 +67,13 @@ E_sol_slow = DVsol_slow(:,3);
 
 
 %calculating full-model solution plots 
-[IVsol_exp, DVsol_exp] = ode23s(@(t, y) DEdef_exp(t, y, a,b,c,f,d,epsilon), domain, IC_full);
+[IVsol_exp, DVsol_exp] = ode15s(@(t, y) DEdef_exp(t, y, a,b,c,f,d,epsilon), domain, IC_full,opts_slow);
 N_sol_exp = DVsol_exp(:, 1);
 A_sol_exp = DVsol_exp(:, 2);
 E_sol_exp = DVsol_exp(:, 3);
 
 %Solving fast-model using ode23
-[IVsol_fast, DVsol_fast] = ode23s(@(t, y) DEdef_fast(t, y, a,b,c,f,h), domain, IC_fast);
+[IVsol_fast, DVsol_fast] = ode15s(@(t, y) DEdef_fast(t, y, a,b,c,f,h), domain, IC_fast,opts_slow);
 N_sol_fast = DVsol_fast(:, 1);
 A_sol_fast = DVsol_fast(:, 2);
 
@@ -83,7 +83,7 @@ fig1 = figure;
 hold on;
 
 % Plot EPS from slow model
-plot(IVsol_slow, DVsol_slow(:,3), 'Color', EPScolordet, 'LineWidth', 2, 'LineStyle', '--', 'DisplayName', 'Regime 1');
+plot(IVsol_slow, E_sol_slow, 'Color', EPScolordet, 'LineWidth', 2, 'LineStyle', '--', 'DisplayName', 'Regime 1');
 
 sigma = .8; % example scaling factor, adjust as needed
 E_tracking = sigma * DVsol_fast(:, 2);
@@ -117,10 +117,12 @@ hold on;
 
 
 % Plot aglae from slow model 
-plot(IVsol_fast, A_sol_fast, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', '-.',  'DisplayName', 'Regime 1');
+plot(IVsol_slow, A_sol_slow, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', ':',  'DisplayName', 'Regime 1');
 
 % Plot algae from fast model
-plot(IVsol_slow, A_sol_slow, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', ':',  'DisplayName', 'Regime 2');
+plot(IVsol_fast, A_sol_fast, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', '-.',  'DisplayName', 'Regime 2');
+
+
 
 % Plot algae from full model
 plot(IVsol_exp, A_sol_exp, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', '-',  'DisplayName', 'Regime 3');
@@ -180,9 +182,9 @@ set(gcf, 'PaperSize', [10, 6]);
 
 
 
-fname1 = 'fig3f';
-fname2= 'fig3e';
-fname3 = 'fig3d';
+fname1 = 'fig3c';
+fname2= 'fig3b';
+fname3 = 'fig3a';
 nice_graphing(fname1,fig1)
 nice_graphing(fname2, fig2)
 nice_graphing(fname3,fig3)
@@ -220,7 +222,7 @@ E = D(3);
 %set of odes
 dNdt = a*exp(-E_0)-(c*N*A)/(N+1) - b*N*exp(-E_0);
 dAdt = (f*N*A)/(N+1)-A;
-dEdt = (d*f*(a*f-a-b))/(exp(E)*c*(f-1));
+dEdt = (d*f*(a*f-a-b))/(exp(E)*c*(f-1))-E;
 % odes in vector form
 Dode = [dNdt; dAdt;dEdt];
 end

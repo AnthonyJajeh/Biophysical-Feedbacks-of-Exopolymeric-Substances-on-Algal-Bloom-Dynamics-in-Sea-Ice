@@ -23,14 +23,14 @@ eta = .03;
 
 
 %Initial conditions
-IC_N = .005;
-IC_A = .003;
-IC_E = .001;
+IC_N = .2;
+IC_A = .03;
+IC_E = .8;
 
 IC_exp = [IC_N IC_A IC_E];
 
 %calculating realistic-model solution plots 
-[IVsol_exp, DVsol_exp] = ode23(@(t, y) DEdef_realistic(t, y, phi, psi ,mu, gamma, nu, rho, xi, delta, eta), domain, IC_exp);
+[IVsol_exp, DVsol_exp] = ode23s(@(t, y) DEdef_realistic(t, y, phi, psi ,mu, gamma, nu, rho, xi, delta, eta), domain, IC_exp);
 N_sol_exp = DVsol_exp(:, 1);
 A_sol_exp = DVsol_exp(:, 2);
 E_sol_exp = DVsol_exp(:, 3);

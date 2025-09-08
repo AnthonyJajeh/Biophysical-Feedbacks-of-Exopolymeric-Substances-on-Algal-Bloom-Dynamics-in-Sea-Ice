@@ -73,7 +73,8 @@ b = psi/delta;
 c = nu/delta;
 d = (rho*gamma)/(mu*eta);
 f = xi * c;
-IC_E = .001/mu; 
+
+IC_E = .8/mu; 
 [IVsol_slow, DVsol_slow] = ode23s(@(t, E) DEdef(t, E, a,b,c,f,d), domain, IC_E);
 
 % Solution plot for dEdt

@@ -10,6 +10,7 @@ N' = (alpha*exp(-E)-(c*N*A)/(1+N)-(b*N)*exp(-E))/epsilon
 
 
 init A=.2, N=.3, E=.8
+
 @ TOTAL=100,DT=.05,xlo=0,xhi=2,ylo=-.01,yhi=6
 @ xplot=N,yplot=E
 @meth=cvode

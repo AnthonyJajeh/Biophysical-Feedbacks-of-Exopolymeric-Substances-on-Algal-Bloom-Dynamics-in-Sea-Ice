@@ -23,7 +23,7 @@ figure_2.m: Matlab file running the slow-model with different
 parameter regimes to produce solution plots 
 
 Figure 3 File:  
-EPS_exact.mw: shows all the steady state analysis done for model that 
+EPS_trace.mw: shows all the steady state analysis done for model that 
 tracks EPS exactly with algae.
 figure_3.m: Matlab file running the fast-slow-exact-full model to compare
 results between different models 
