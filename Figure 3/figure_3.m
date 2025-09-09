@@ -5,7 +5,7 @@
 clear all;clc;close all;
 
 %domain 
-n=300;
+n=500;
 domain = [0 n];
 
 % Define colors for deterministic results
@@ -13,22 +13,10 @@ algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS 
 
-
-% %Parameter values for fig 3 a/b<
-phi = .0001;
-psi = .5;
-mu = .001;
-gamma = .01; 
-nu = .2; 
-rho = .75; 
-xi = .2;
-delta = .007; 
-eta = .03;
-sigma = .8; % example scaling factor, adjust as needed
-
-% % %Parameter values for fig 3 a/b>
+% 
+% % %Parameter values for fig 3 a/b<
 % phi = .0001;
-% psi = .01;
+% psi = .5;
 % mu = .001;
 % gamma = .01; 
 % nu = .2; 
@@ -37,6 +25,18 @@ sigma = .8; % example scaling factor, adjust as needed
 % delta = .007; 
 % eta = .03;
 % sigma = .8; % example scaling factor, adjust as needed
+
+%Parameter values for fig 3 a/b>
+phi = .0001;
+psi = .01;
+mu = .001;
+gamma = .01; 
+nu = .2; 
+rho = .75; 
+xi = .2;
+delta = .007; 
+eta = .03;
+sigma = .8; % example scaling factor, adjust as needed
 
 %nondimensional conversion values 
 epsilon = eta/delta;
@@ -97,7 +97,7 @@ plot(IVsol_exp, E_sol_exp, 'Color', EPScolordet, 'LineWidth', 2, 'LineStyle', '-
 
 % Set axes limits dynamically based on max EPS value from all
 maxnutrient = max([E_sol_exp; DVsol_slow(:,3)]);
-ylim([0, maxnutrient * 1.2]);
+ylim([0, 10]);
 xlim([0, n]);
 
 xlabel('time', 'Color', 'k');
@@ -130,7 +130,7 @@ plot(IVsol_exp, A_sol_exp, 'Color', algaecolordet, 'LineWidth', 2,'LineStyle', '
 
 % Set axes limits dynamically based on max algae value from all
 maxnutrient = max([A_sol_exp; A_sol_fast; A_sol_slow]);
-ylim([0, maxnutrient * 1.2]);
+ylim([0, .5]);
 xlim([0, n]);
 
 xlabel('time', 'Color', 'k');
@@ -162,7 +162,7 @@ plot(IVsol_exp, N_sol_exp, 'Color', nutrientcolordet, 'LineWidth', 2,'LineStyle'
 
 % Set axes limits dynamically based on max algae value from all
 maxnutrient = max([N_sol_exp; N_sol_fast; N_sol_slow]);
-ylim([0, maxnutrient * 1.2]);
+ylim([0, .5]);
 xlim([0, n]);
 
 xlabel('time', 'Color', 'k');
@@ -182,9 +182,9 @@ set(gcf, 'PaperSize', [10, 6]);
 
 
 
-fname1 = 'fig3c';
-fname2= 'fig3b';
-fname3 = 'fig3a';
+fname1 = 'fig3f';
+fname2= 'fig3e';
+fname3 = 'fig3d';
 nice_graphing(fname1,fig1)
 nice_graphing(fname2, fig2)
 nice_graphing(fname3,fig3)

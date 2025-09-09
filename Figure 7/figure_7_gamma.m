@@ -1,42 +1,44 @@
 %Author:Anthony Jajeh
-%Date: Aug 26, 2025
-%Testing to see when algal and EPS blooms appear for various values of parameter a 
+%Date: Sept 3, 2025
+%Testing to see when algal and EPS blooms appear for various values of
+%parameter c
 clear all; clc; close all;
-n=2000;
+n=1000;
 domain = [0 n];
 algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS
-
 %Parameter values 
 phi = .01;
-psi_vec = linspace(.001,1,20);
-mu = .001;
-gamma = .01; 
-nu = .2; 
-rho = .75; 
+psi = .01;
+mu =.001;
+eta = .03; 
+nu = .2;
+gamma_vec = linspace(.01*.5,.01*1.5,50); 
 xi = .2;
-delta = .007; 
-eta = .03;% 
+rho = .75; 
+delta = .007;
 
 
+%nondimensional conversion values 
 %Initial conditions
-IC_N = .005;
-IC_A = .003;
-IC_E = .001;
+IC_N = .2;
+IC_A = .03;
+IC_E = .8;
+
 
 %Allocting space for the maximum values of algae, nutrients, and EPS 
-A_max = zeros(1,length(psi_vec));
-N_max = zeros(1,length(psi_vec));
-E_max = zeros(1,length(psi_vec));
+A_max = zeros(1, length(gamma_vec));
+N_max = zeros(1,length(gamma_vec));
+E_max = zeros(1,length(gamma_vec));
 
 %runs a solution plot for different values of specified parameter 
-for i = 1:length(psi_vec)
-    psi = psi_vec(i);
+for i = 1:length(gamma_vec)
+    gamma = gamma_vec(i);
     IC_exp = [IC_N IC_A IC_E];
     % Solve simplified model for current a
     
-    [IVsol_exp, DVsol_exp] = ode15s(@(t, y) DEdef_exp(t, y, phi,psi,nu,xi,delta,rho,eta,mu,gamma), domain, IC_exp);
+    [IVsol_exp, DVsol_exp] = ode23s(@(t, y) DEdef_exp(t, y, phi,psi,nu,xi,delta,rho,eta,mu,gamma), domain, IC_exp);
     N_sol_exp = DVsol_exp(:, 1);
     A_sol_exp = DVsol_exp(:, 2);
     E_sol_exp = DVsol_exp(:, 3);
@@ -47,59 +49,59 @@ for i = 1:length(psi_vec)
     E_max(i) = max(E_sol_exp);
   
     %plotting solution curves of NAE-model 
-% Create a new figure
-fig = figure;
-set(fig, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
-hold on;
-
-% Plot nutrients on the left y-axis
-yyaxis left;
-plot(IVsol_exp, N_sol_exp, 'color', nutrientcolordet, 'linewidth', 3);
-ylim([0, max(N_sol_exp) * 1.2]);
-ylabel('nutrients','FontSize',20,'Color','k');
-set(gca, 'YColor', 'k'); % Set the left axis color to black
-
-% Plot algae and EPS on the right y-axis
-yyaxis right;
-plot(IVsol_exp, A_sol_exp, 'color', algaecolordet, 'linewidth', 3);
-hold on;
-plot(IVsol_exp, E_sol_exp, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
-ylim([0, max([A_sol_exp; E_sol_exp]) * 1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
-ylabel('algae & EPS','FontSize',20,'Color','k');
-
-% Set common properties
-xlim([0, n]);
-xlabel('time (days)','FontSize',20,'Color','k');
-set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
-title("$\psi$=",psi)
-% Add legend
-legend('Nutrients', 'Algae', 'EPS', 'Location', 'northeast');
-legend boxoff; % Hide the legend's axes (border and background)
+% % Create a new figure
+% fig = figure;
+% set(fig, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
+% hold on;
+% 
+% % Plot nutrients on the left y-axis
+% yyaxis left;
+% plot(IVsol_exp, N_sol_exp, 'color', nutrientcolordet, 'linewidth', 3);
+% plot(IVsol_exp, A_sol_exp, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
+% ylim([0, max([max(N_sol_exp);max(A_sol_exp)]) * 1.2]);
+% ylabel('nutrients','FontSize',20,'Color','k');
+% set(gca, 'YColor', 'k'); % Set the left axis color to black
+% 
+% % Plot EPS on the right y-axis
+% yyaxis right;
+% plot(IVsol_exp, A_sol_exp, 'color', algaecolordet, 'linewidth', 3);
+% hold on;
+% plot(IVsol_exp, E_sol_exp, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
+% ylim([min(E_sol_exp)*.9, max(E_sol_exp) * 1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+% ylabel('algae & EPS','FontSize',20,'Color','k');
+% 
+% % Set common properties
+% xlim([0, n]);
+% xlabel('time (days)','FontSize',20,'Color','k');
+% set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
+% title("$\gamma$=",gamma_vec(i))
+% % Add legend
+% legend('Nutrients', 'Algae', 'EPS', 'Location', 'northeast');
+% legend boxoff; % Hide the legend's axes (border and background)
 
 end
 
 
 figp = figure;
-set(fig, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
 hold on;
 
 % Plot nutrients on the left y-axis
 yyaxis left;
-plot(psi_vec, N_max, 'color', nutrientcolordet, 'linewidth', 3);
-plot(psi_vec, A_max, 'color', algaecolordet, 'linewidth', 3,'LineStyle','-');
-ylim([0, max([max(N_max); max(A_max)]) * 1.2]);
+plot(gamma_vec, N_max, 'color', nutrientcolordet, 'linewidth', 3);
+plot(gamma_vec, A_max, 'color', algaecolordet, 'linewidth', 3,'LineStyle','-');
+ylim([0, max([max(N_max); max(A_max)]) * 1.4]);
 ylabel('max nutrients \& algae','FontSize',17,'Color','k');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
 % Plot algae and EPS on the right y-axis
 yyaxis right;
 hold on;
-plot(psi_vec, E_max, 'color', EPScolordet, 'linewidth', 3);
-ylim([0,  max(E_max) * 1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+plot(gamma_vec, E_max, 'color', EPScolordet, 'linewidth', 3);
+ylim([0, max(E_max) * 1.5]); % Ensures that the y-axis accommodates the largest value of algae or EPS
 ylabel('max EPS','FontSize',17,'Color','k');
 
-xlabel('$\psi$', 'FontSize', 20);
-xlim([min(psi_vec),max(psi_vec)])
+xlabel('$\gamma$', 'FontSize', 20);
+xlim([min(gamma_vec),max(gamma_vec)])
 
 set(gca, 'YColor', 'k'); % <-- Apply black color to right y-axis
 
@@ -109,7 +111,7 @@ legend boxoff; % Hide the legend's axes (border and background)
 
 %Defining NAE-model
 
-fname = 'fig8b';
+fname = 'fig7gamma';
 nice_graphing(fname, figp)
 
 function nice_graphing(fname, fig)
@@ -128,6 +130,7 @@ set(fig,'PaperPositionMode','Auto','PaperUnits','centimeters','PaperSize',[pos(3
 %print(hfig,fname,'-dpng','-painters')
 %set(hfig, 'Position', get(0, 'Screensize'));
 exportgraphics(fig, strcat(fname,'.png'), 'ContentType', 'vector');
+saveas(fig,strcat(fname,'.fig'))
 end
 
 
@@ -137,16 +140,15 @@ function [Dode] = DEdef_exp(I,D,phi,psi,nu,xi,delta,rho,eta,mu,gamma)
 %I- indepenedent variable
 %D - dependent variable
 
-
 % naming the ode values I want
 N = D(1);
 A = D(2);
 E = D(3);
 
 %set of odes
-dNdt = phi * exp(-E/mu)- (nu*N*A)/(N+gamma)-psi*N*exp(-E/mu);
-dAdt = (xi*nu*N*A)/(N+gamma)-delta*A;
-dEdt = rho*A-eta*E;
+dNdt = phi * exp(-E/mu) - (nu*N*A)/(N+gamma) - psi*N*exp(-E/mu);
+dAdt = (xi*nu*A*N)/(N+gamma) - delta*A;
+dEdt = rho*A - eta*E;
 
 % odes in vector form
 Dode = [dNdt; dAdt; dEdt];

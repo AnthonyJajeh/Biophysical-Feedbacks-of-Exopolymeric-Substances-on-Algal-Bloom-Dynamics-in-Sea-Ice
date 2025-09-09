@@ -3,7 +3,7 @@
 %Testing to see when algal and EPS blooms appear for various values of
 %parameter c
 clear all; clc; close all;
-n=3000;
+n=1000;
 domain = [0 n];
 algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
@@ -14,9 +14,9 @@ psi = .01;
 mu =.001;
 gamma = .01; 
 nu = .2;
-rho_vec = linspace(.1,1,20); 
+delta_vec = linspace(.007*.5,.007*1.5,100); 
 xi = .2;
-delta = .007; 
+rho = .75; 
 eta = .03;
 
 
@@ -28,13 +28,13 @@ IC_E = .8;
 
 
 %Allocting space for the maximum values of algae, nutrients, and EPS 
-A_max = zeros(1, length(rho_vec));
-N_max = zeros(1,length(rho_vec));
-E_max = zeros(1,length(rho_vec));
+A_max = zeros(1, length(delta_vec));
+N_max = zeros(1,length(delta_vec));
+E_max = zeros(1,length(delta_vec));
 
 %runs a solution plot for different values of specified parameter 
-for i = 1:length(rho_vec)
-    rho = rho_vec(i);
+for i = 1:length(delta_vec)
+    delta = delta_vec(i);
     IC_exp = [IC_N IC_A IC_E];
     % Solve simplified model for current a
     
@@ -48,60 +48,60 @@ for i = 1:length(rho_vec)
     A_max(i) = max(A_sol_exp);
     E_max(i) = max(E_sol_exp);
   
-    %plotting solution curves of NAE-model 
-% Create a new figure
-fig = figure;
-set(fig, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
-hold on;
-
-% Plot nutrients on the left y-axis
-yyaxis left;
-plot(IVsol_exp, N_sol_exp, 'color', nutrientcolordet, 'linewidth', 3);
-ylim([0, max(N_sol_exp) * 1.2]);
-ylabel('nutrients','FontSize',20,'Color','k');
-set(gca, 'YColor', 'k'); % Set the left axis color to black
-
-% Plot algae and EPS on the right y-axis
-yyaxis right;
-plot(IVsol_exp, A_sol_exp, 'color', algaecolordet, 'linewidth', 3);
-hold on;
-plot(IVsol_exp, E_sol_exp, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
-ylim([0, max([A_sol_exp; E_sol_exp]) * 1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
-ylabel('algae & EPS','FontSize',20,'Color','k');
-
-% Set common properties
-xlim([0, n]);
-xlabel('time (days)','FontSize',20,'Color','k');
-set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
-title("$\rho$=",rho_vec(i))
-% Add legend
-legend('Nutrients', 'Algae', 'EPS', 'Location', 'northeast');
+%     %plotting solution curves of NAE-model 
+% % Create a new figure
+% fig = figure;
+% set(fig, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
+% hold on;
+% 
+% % Plot nutrients on the left y-axis
+% yyaxis left;
+% plot(IVsol_exp, N_sol_exp, 'color', nutrientcolordet, 'linewidth', 3);
+% ylim([0, max(N_sol_exp) * 1.2]);
+% ylabel('nutrients','FontSize',20,'Color','k');
+% set(gca, 'YColor', 'k'); % Set the left axis color to black
+% 
+% % Plot algae and EPS on the right y-axis
+% yyaxis right;
+% plot(IVsol_exp, A_sol_exp, 'color', algaecolordet, 'linewidth', 3);
+% hold on;
+% plot(IVsol_exp, E_sol_exp, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
+% ylim([0, max([A_sol_exp; E_sol_exp]) * 1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+% ylabel('algae & EPS','FontSize',20,'Color','k');
+% 
+% % Set common properties
+% xlim([0, n]);
+% xlabel('time (days)','FontSize',20,'Color','k');
+% set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
+% title("$\delta$=",delta_vec(i))
+% % Add legend
+% legend('Nutrients', 'Algae', 'EPS', 'Location', 'northeast');
 legend boxoff; % Hide the legend's axes (border and background)
 
 end
 
 
 figp = figure;
-set(fig, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
+% set(fig, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
 hold on;
 
 % Plot nutrients on the left y-axis
 yyaxis left;
-plot(rho_vec, N_max, 'color', nutrientcolordet, 'linewidth', 3);
-plot(rho_vec, A_max, 'color', algaecolordet, 'linewidth', 3,'LineStyle','-');
-ylim([0, max([max(N_max); max(A_max)]) * 1.2]);
+plot(delta_vec, N_max, 'color', nutrientcolordet, 'linewidth', 3);
+plot(delta_vec, A_max, 'color', algaecolordet, 'linewidth', 3,'LineStyle','-');
+ylim([0, max([max(N_max); max(A_max)]) * 1.4]);
 ylabel('max nutrients \& algae','FontSize',17,'Color','k');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
 % Plot algae and EPS on the right y-axis
 yyaxis right;
 hold on;
-plot(rho_vec, E_max, 'color', EPScolordet, 'linewidth', 3);
-ylim([0,  max(E_max) * 1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+plot(delta_vec, E_max, 'color', EPScolordet, 'linewidth', 3);
+ylim([0,  max(E_max) * 1.5]); % Ensures that the y-axis accommodates the largest value of algae or EPS
 ylabel('max EPS','FontSize',17,'Color','k');
 
-xlabel('$\rho$', 'FontSize', 20);
-xlim([min(rho_vec),max(rho_vec)])
+xlabel('$\delta$', 'FontSize', 20);
+xlim([min(delta_vec),max(delta_vec)])
 
 set(gca, 'YColor', 'k'); % <-- Apply black color to right y-axis
 
@@ -111,7 +111,7 @@ legend boxoff; % Hide the legend's axes (border and background)
 
 %Defining NAE-model
 
-fname = 'fig8e';
+fname = 'fig7delta';
 nice_graphing(fname, figp)
 
 function nice_graphing(fname, fig)
@@ -130,6 +130,7 @@ set(fig,'PaperPositionMode','Auto','PaperUnits','centimeters','PaperSize',[pos(3
 %print(hfig,fname,'-dpng','-painters')
 %set(hfig, 'Position', get(0, 'Screensize'));
 exportgraphics(fig, strcat(fname,'.png'), 'ContentType', 'vector');
+saveas(fig,strcat(fname,'.fig'))
 end
 
 
@@ -139,16 +140,15 @@ function [Dode] = DEdef_exp(I,D,phi,psi,nu,xi,delta,rho,eta,mu,gamma)
 %I- indepenedent variable
 %D - dependent variable
 
-
 % naming the ode values I want
 N = D(1);
 A = D(2);
 E = D(3);
 
 %set of odes
-dNdt = phi * exp(-E/mu)- (nu*N*A)/(N+gamma)-psi*N*exp(-E/mu);
-dAdt = (xi*nu*N*A)/(N+gamma)-delta*A;
-dEdt = rho*A-eta*E;
+dNdt = phi * exp(-E/mu) - (nu*N*A)/(N+gamma) - psi*N*exp(-E/mu);
+dAdt = (xi*nu*A*N)/(N+gamma) - delta*A;
+dEdt = rho*A - eta*E;
 
 % odes in vector form
 Dode = [dNdt; dAdt; dEdt];
