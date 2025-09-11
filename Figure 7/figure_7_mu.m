@@ -11,7 +11,7 @@ EPScolordet = 1/255*[125,91,166]; % color for EPS
 %Parameter values 
 phi = .01;
 psi = .01;
-mu_vec =  linspace(.001*.5,.001*1.5,50);
+mu_vec =  linspace(.001*.5,.001*1.5,5);
 gamma = .01; 
 nu = .2;
 rho = .75; 
@@ -23,8 +23,9 @@ eta = .03;
 %nondimensional conversion values 
 %Initial conditions
 IC_N = .2;
-IC_A = .03;
-IC_E = .8;
+IC_A = .0001;
+IC_E = .001;
+
 
 
 %Allocting space for the maximum values of algae, nutrients, and EPS 
@@ -48,20 +49,20 @@ for i = 1:length(mu_vec)
     A_max(i) = max(A_sol_exp);
     E_max(i) = max(E_sol_exp);
   
-    %plotting solution curves of NAE-model 
-% Create a new figure
+%     %plotting solution curves of NAE-model 
+% %Create a new figure
 % fig = figure;
 % set(fig, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
 % hold on;
 % 
-% Plot nutrients on the left y-axis
+% %Plot nutrients on the left y-axis
 % yyaxis left;
 % plot(IVsol_exp, N_sol_exp, 'color', nutrientcolordet, 'linewidth', 3);
 % ylim([0, max(N_sol_exp) * 1.4]);
 % ylabel('nutrients','FontSize',20,'Color','k');
 % set(gca, 'YColor', 'k'); % Set the left axis color to black
 % 
-% Plot algae and EPS on the right y-axis
+% %Plot algae and EPS on the right y-axis
 % yyaxis right;
 % plot(IVsol_exp, A_sol_exp, 'color', algaecolordet, 'linewidth', 3);
 % hold on;
@@ -69,12 +70,12 @@ for i = 1:length(mu_vec)
 % ylim([0, max([A_sol_exp; E_sol_exp]) * 1.5]); % Ensures that the y-axis accommodates the largest value of algae or EPS
 % ylabel('algae & EPS','FontSize',20,'Color','k');
 % 
-% Set common properties
+% %Set common properties
 % xlim([0, n]);
 % xlabel('time (days)','FontSize',20,'Color','k');
 % set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
 % title("$\mu$=",mu)
-% Add legend
+% %Add legend
 % legend('Nutrients', 'Algae', 'EPS', 'Location', 'northeast');
 % legend boxoff; % Hide the legend's axes (border and background)
 
@@ -88,7 +89,7 @@ hold on;
 yyaxis left;
 plot(mu_vec, N_max, 'color', nutrientcolordet, 'linewidth', 3);
 plot(mu_vec, A_max, 'color', algaecolordet, 'linewidth', 3,'LineStyle','-');
-ylim([0, max([max(N_max); max(A_max)]) * 1.4]);
+ylim([min([min(N_max);min(A_max)]*.98), max([max(N_max); max(A_max)]) * 1.3]);
 ylabel('max nutrients \& algae','FontSize',17,'Color','k');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
@@ -96,7 +97,7 @@ set(gca, 'YColor', 'k'); % Set the left axis color to black
 yyaxis right;
 hold on;
 plot(mu_vec, E_max, 'color', EPScolordet, 'linewidth', 3);
-ylim([min(E_max)*.9,  max(E_max) * 1.5]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+ylim([min(E_max)*.98,  max(E_max)*1.2 ]); % Ensures that the y-axis accommodates the largest value of algae or EPS
 ylabel('max EPS','FontSize',17,'Color','k');
 
 xlabel('$\mu$', 'FontSize', 20);
@@ -105,8 +106,8 @@ xlim([min(mu_vec),max(mu_vec)])
 set(gca, 'YColor', 'k'); % <-- Apply black color to right y-axis
 
 % Add legend
-legend('Max Nutrients', 'Max Algae', 'Max EPS', 'Location', 'northeast');
-legend boxoff; % Hide the legend's axes (border and background)
+%legend('Max Nutrients', 'Max Algae', 'Max EPS', 'Location', 'northeast');
+%legend boxoff; % Hide the legend's axes (border and background)
 
 %Defining NAE-model
 
@@ -123,12 +124,13 @@ set(findall(fig,'-property','TickLabelInterpreter'),'TickLabelInterpreter','late
 set(fig,'Units','centimeters','Position',[3 3 picturewidth hw_ratio*picturewidth])
 pos = get(fig,'Position');
 set(fig,'PaperPositionMode','Auto','PaperUnits','centimeters','PaperSize',[pos(3), pos(4)])
- lgd = findall(fig, 'Type', 'Legend');
-    set(lgd, 'Box', 'off');     % ensure no border if a legend exists
+ %lgd = findall(fig, 'Type', 'Legend');
+  %  set(lgd, 'Box', 'off');     % ensure no border if a legend exists
 %print(hfig,fname,'-dpdf','-painters','-fillpage')
 %print(hfig,fname,'-dpng','-painters')
 %set(hfig, 'Position', get(0, 'Screensize'));
 exportgraphics(fig, strcat(fname,'.png'), 'ContentType', 'vector');
+exportgraphics(fig, strcat(fname,'.pdf'), 'ContentType', 'vector');
 saveas(fig,strcat(fname,'.fig'))
 end
 

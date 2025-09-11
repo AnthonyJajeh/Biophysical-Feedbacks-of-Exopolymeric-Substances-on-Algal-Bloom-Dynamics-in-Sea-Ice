@@ -4,7 +4,7 @@
 % Steady state analysis of realistic-model using exponential function as
 % inflow/outflow of nutrients functions
 clear all; clc; close all;
-n=365;
+n=3000;
 domain = [0 n];
 algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
@@ -24,8 +24,8 @@ eta = .03;
 
 %Initial conditions
 IC_N = .2;
-IC_A = .03;
-IC_E = .8;
+IC_A = .0001;
+IC_E = .001;
 
 IC_exp = [IC_N IC_A IC_E];
 
@@ -46,7 +46,7 @@ yyaxis left;
 plot(IVsol_exp, N_sol_exp, 'color', nutrientcolordet, 'linewidth', 3);
 plot(IVsol_exp, A_sol_exp, 'color', algaecolordet, 'linewidth', 3,'LineStyle','-');
 
-ylim([0, max(N_sol_exp) * 1.2]);
+ylim([0, .01]);
 ylabel('nutrients (mg N/L) \& algae (mg chl-a/L) ','FontSize',20,'Color','k');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
@@ -54,7 +54,7 @@ set(gca, 'YColor', 'k'); % Set the left axis color to black
 yyaxis right;
 hold on;
 plot(IVsol_exp, E_sol_exp, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
-ylim([0, max([A_sol_exp; E_sol_exp]) * 1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+ylim([0, .2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
 ylabel('EPS (mg XG/L)','FontSize',20,'Color','k');
 
 % Set common properties
@@ -64,9 +64,9 @@ set(gca, 'fontsize', 17, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick
 
 
 % Add legend
-legend('Nutrients', 'Algae', 'EPS', 'Location', 'northeast');
-legend boxoff; % Hide the legend's axes (border and background)
-fname = 'fig8';
+%legend('Nutrients', 'Algae', 'EPS', 'Location', 'northeast');
+%legend boxoff; % Hide the legend's axes (border and background)
+fname = 'fig8b';
 nice_graphing(fname, fig)
 
 function nice_graphing(fname, fig)
@@ -79,11 +79,12 @@ set(findall(fig,'-property','TickLabelInterpreter'),'TickLabelInterpreter','late
 set(fig,'Units','centimeters','Position',[3 3 picturewidth hw_ratio*picturewidth])
 pos = get(fig,'Position');
 set(fig,'PaperPositionMode','Auto','PaperUnits','centimeters','PaperSize',[pos(3), pos(4)])
- lgd = findall(fig, 'Type', 'Legend');
-    set(lgd, 'Box', 'off');     % ensure no border if a legend exists
+ %lgd = findall(fig, 'Type', 'Legend');
+ %   set(lgd, 'Box', 'off');     % ensure no border if a legend exists
 %print(hfig,fname,'-dpdf','-painters','-fillpage')
 %print(hfig,fname,'-dpng','-painters')
 exportgraphics(fig, strcat(fname,'.png'), 'ContentType', 'vector');
+exportgraphics(fig, strcat(fname,'.pdf'), 'ContentType', 'vector');
 saveas(fig,strcat(fname,'.fig'))
 end
 %Defining realistic-full-model

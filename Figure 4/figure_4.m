@@ -3,22 +3,22 @@
 % Steady state analysis of NAE-model using exponential function as
 % inflow/outflow of nutrients functions
 clear all; clc; close all;
-n=500;
+n=300;
 
 algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS
 % 
 % %Parameter values for fig 4a
-phi = .0001;
-psi = .1;
-mu = .001;
-gamma = .01; 
-nu = .2; 
-rho = .75; 
-xi = .2;
-delta = .007; 
-eta = .03;
+% phi = .0001;
+% psi = .1;
+% mu = .001;
+% gamma = .01; 
+% nu = .2; 
+% rho = .75; 
+% xi = .2;
+% delta = .007; 
+% eta = .03;
 % % % 
 % 
 % %Parameter values for fig 4b
@@ -33,15 +33,15 @@ eta = .03;
 % eta = .03;
 
 %Parameter values for fig 4c
-% phi = .01;
-% psi = .01;
-% mu = .001;
-% gamma = .01; 
-% nu = .2; 
-% rho = .75; 
-% xi = .2;
-% delta = .007; 
-% eta = .03;
+phi = .01;
+psi = .01;
+mu = .001;
+gamma = .01; 
+nu = .2; 
+rho = .75; 
+xi = .2;
+delta = .007; 
+eta = .03;
 
 %nondimensional conversion values 
 a = phi/(gamma*delta);
@@ -54,8 +54,8 @@ epsilon = eta/delta;
 domain = [0 n];
 %Initial conditions
 IC_N = .2/gamma;
-IC_A = .03/gamma;
-IC_E = .8/mu;
+IC_A = .0001/gamma;
+IC_E = .001/mu;
 
 IC_exp = [IC_N IC_A IC_E];
 %calculating NAE-model solution plots 
@@ -76,14 +76,14 @@ hold on;
 yyaxis left;
 plot(IVsol_exp, N_sol_exp, 'color', nutrientcolordet, 'linewidth', 3);
 plot(IVsol_exp, A_sol_exp, 'color', algaecolordet, 'linewidth', 3,'LineStyle','-');
-ylim([0, .2]);
+ylim([0, 1]);
 ylabel('nutrients \& algae','FontSize',20,'Color','k');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
 % Plot algae and EPS on the right y-axis
 yyaxis right;
 plot(IVsol_exp, E_sol_exp, 'color', EPScolordet, 'linewidth', 3);
-ylim([0, 300]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+ylim([0, 20]); % Ensures that the y-axis accommodates the largest value of algae or EPS
 ylabel('EPS','FontSize',20,'Color','k');
 
 % Set common properties
@@ -93,8 +93,8 @@ hold off
 set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
 
 % Add legend
-legend('Nutrients', 'Algae', 'EPS', 'Location', 'northeast');
-legend boxoff; % Hide the legend's axes (border and background)
+%legend('Nutrients', 'Algae', 'EPS', 'Location', 'northeast');
+%legend boxoff; % Hide the legend's axes (border and background)
 
 
 
@@ -102,7 +102,7 @@ legend boxoff; % Hide the legend's axes (border and background)
 
 
 
-fname = 'fig4a';
+fname = 'fig4c';
 nice_graphing(fname,fig)
 
 
@@ -115,13 +115,15 @@ set(findall(fig,'-property','Interpreter'),'Interpreter','latex')
 set(findall(fig,'-property','TickLabelInterpreter'),'TickLabelInterpreter','latex')
 set(fig,'Units','centimeters','Position',[3 3 picturewidth hw_ratio*picturewidth])
 pos = get(fig,'Position');
- lgd = findall(fig, 'Type', 'Legend');
-    set(lgd, 'Box', 'off');     % ensure no border if a legend exists
+%lgd = findall(fig, 'Type', 'Legend');
+%set(lgd, 'Box', 'off');     % ensure no border if a legend exists
 set(fig,'PaperPositionMode','Auto','PaperUnits','centimeters','PaperSize',[pos(3), pos(4)])
 %print(hfig,fname,'-dpdf','-painters','-fillpage')
 %print(hfig,fname,'-dpng','-painters')
 %set(hfig, 'Position', get(0, 'Screensize'));
 exportgraphics(fig, strcat(fname,'.png'), 'ContentType', 'vector');
+exportgraphics(fig, strcat(fname,'.pdf'), 'ContentType', 'vector');
+saveas(fig,strcat(fname,'.fig'))
 end
 
 function [Dode] = DEdef_exp(I,D,a,b,c,f,d,epsilon)

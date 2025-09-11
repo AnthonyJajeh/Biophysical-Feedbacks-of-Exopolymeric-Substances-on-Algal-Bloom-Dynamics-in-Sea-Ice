@@ -11,28 +11,28 @@ algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS 
 
-%Parameter values for fig 1b
-% phi = .01;
-% psi = .01;
-% mu = .001;
-% gamma = .01; 
-% nu = .2; 
-% rho = .75; 
-% xi = .2;
-% delta = .007; 
-% eta = .03;
-
-% 
-% % %Parameter values for fig 1a
-phi = .0001;
-psi = .05;
+%Parameter values for fig 1a
+phi = .01;
+psi = .01;
 mu = .001;
 gamma = .01; 
 nu = .2; 
 rho = .75; 
 xi = .2;
 delta = .007; 
-eta = .03;% 
+eta = .03;
+
+
+% % %Parameter values for fig 1b
+% phi = .0001;
+% psi = .05;
+% mu = .001;
+% gamma = .01; 
+% nu = .2; 
+% rho = .75; 
+% xi = .2;
+% delta = .007; 
+% eta = .03;% 
 
 
 
@@ -45,13 +45,13 @@ f = xi * c;
 epsilon = eta/delta;
 
 %domain 
-n=10;
+n=;
 domain = [0 n];
 
 %Initial conditions
 IC_N = .2/gamma;
-IC_A = .03/gamma;
-IC_E = .8;
+IC_A = .0001/gamma;
+IC_E = .001/mu;
 
 %initial condition vector 
 IC_fast = [IC_N IC_A];
@@ -96,7 +96,7 @@ hold off;
 % Set the figure size and save as PDF, PNG, and FIG
 set(gcf, 'units', 'inches', 'Position', [2, 2, 6, 4]);
 set(gcf, 'PaperSize', [10, 6]); % Set the paper to have width 6 and height 4
-fname = 'fig1b';
+fname = 'fig1a';
 nice_graphing(fname, fig)
 
 function nice_graphing(fname, fig)
@@ -109,12 +109,15 @@ set(findall(fig,'-property','TickLabelInterpreter'),'TickLabelInterpreter','late
 set(fig,'Units','centimeters','Position',[3 3 picturewidth hw_ratio*picturewidth])
 pos = get(fig,'Position');
 set(fig,'PaperPositionMode','Auto','PaperUnits','centimeters','PaperSize',[pos(3), pos(4)])
- lgd = findall(fig, 'Type', 'Legend');
-    set(lgd, 'Box', 'off');     % ensure no border if a legend exists
+lgd = findall(fig, 'Type', 'Legend');
+set(lgd, 'Box', 'off');     % ensure no border if a legend exists
 %print(hfig,fname,'-dpdf','-painters','-fillpage')
 %print(hfig,fname,'-dpng','-painters')
 %set(hfig, 'Position', get(0, 'Screensize'));
 exportgraphics(fig, strcat(fname,'.png'), 'ContentType', 'vector');
+exportgraphics(fig, strcat(fname,'.pdf'), 'ContentType', 'vector');
+saveas(fig,strcat(fname,'.fig'))
+
 end
 
 %Defining QSS-NA-model

@@ -5,7 +5,7 @@
 clear all;clc;close all;
 
 %domain 
-n=500;
+n=300;
 domain = [0 n];
 
 % Define colors for deterministic results
@@ -49,8 +49,8 @@ h = (sigma*gamma)/mu;
 
 %Initial conditions
 IC_N = .2/gamma;
-IC_A = .03/gamma;
-IC_E = .8/mu;
+IC_A = .0001/gamma;
+IC_E = .001/mu;
 
 %initial condition vector 
 IC_fast = [IC_N IC_A];
@@ -104,8 +104,8 @@ xlabel('time', 'Color', 'k');
 ylabel('EPS', 'Color', 'k');
 set(gca, 'FontSize', 20, 'XColor', 'k', 'YColor', 'k');
 
-legend('Location', 'northeast');
-legend boxoff;
+%legend('Location', 'northeast');
+%legend boxoff;
 
 hold off;
 
@@ -137,8 +137,8 @@ xlabel('time', 'Color', 'k');
 ylabel('algae', 'Color', 'k');
 set(gca, 'FontSize', 20, 'XColor', 'k', 'YColor', 'k');
 
-legend('Location', 'northeast');
-legend boxoff;
+%legend('Location', 'northeast');
+%legend boxoff;
 
 hold off;
 
@@ -169,8 +169,8 @@ xlabel('time', 'Color', 'k');
 ylabel('nutrients', 'Color', 'k');
 set(gca, 'FontSize', 20, 'XColor', 'k', 'YColor', 'k');
 
-legend('Location', 'northeast');
-legend boxoff;
+%legend('Location', 'northeast');
+%legend boxoff;
 
 hold off;
 
@@ -199,12 +199,14 @@ set(findall(fig,'-property','TickLabelInterpreter'),'TickLabelInterpreter','late
 set(fig,'Units','centimeters','Position',[3 3 picturewidth hw_ratio*picturewidth])
 pos = get(fig,'Position');
 set(fig,'PaperPositionMode','Auto','PaperUnits','centimeters','PaperSize',[pos(3), pos(4)])
-lgd = findall(fig, 'Type', 'Legend');
-    set(lgd, 'Box', 'off');     % ensure no border if a legend exists
+%lgd = findall(fig, 'Type', 'Legend');
+%set(lgd, 'Box', 'off');     % ensure no border if a legend exists
 %print(hfig,fname,'-dpdf','-painters','-fillpage')
 %print(hfig,fname,'-dpng','-painters')
 %set(hfig, 'Position', get(0, 'Screensize'));
 exportgraphics(fig, strcat(fname,'.png'), 'ContentType', 'vector');
+exportgraphics(fig, strcat(fname,'.pdf'), 'ContentType', 'vector');
+saveas(fig,strcat(fname,'.fig'))
 end
 
 

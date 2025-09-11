@@ -74,7 +74,7 @@ c = nu/delta;
 d = (rho*gamma)/(mu*eta);
 f = xi * c;
 
-IC_E = .8/mu; 
+IC_E = .001/mu; 
 [IVsol_slow, DVsol_slow] = ode23s(@(t, E) DEdef(t, E, a,b,c,f,d), domain, IC_E);
 
 % Solution plot for dEdt
@@ -125,6 +125,9 @@ set(fig,'PaperPositionMode','Auto','PaperUnits','centimeters','PaperSize',[pos(3
 %print(hfig,fname,'-dpng','-painters')
 %set(hfig, 'Position', get(0, 'Screensize'));
 exportgraphics(fig, strcat(fname,'.png'), 'ContentType', 'vector');
+exportgraphics(fig, strcat(fname,'.pdf'), 'ContentType', 'vector');
+saveas(fig,strcat(fname,'.fig'))
+
 end
 
 
