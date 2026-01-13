@@ -11,93 +11,210 @@ algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS 
 
-%Parameter values for fig 1a
-phi = .01;
-psi = .01;
-mu = .001;
-gamma = .01; 
-nu = .2; 
-rho = .75; 
-xi = .2;
-delta = .007; 
-eta = .03;
+%Parameter values for fig 1ac Trivial
+ phi_1 = .01;
+ psi_1 = .01;
+ mu_1 = .001;
+ gamma_1 = .01; 
+ nu_1 = .2; 
+ rho_1 = .75; 
+ xi_1 = .2;
+ delta_1 = .007; 
+ eta_1 = .03;
 
 
-% % %Parameter values for fig 1b
-% phi = .0001;
-% psi = .05;
-% mu = .001;
-% gamma = .01; 
-% nu = .2; 
-% rho = .75; 
-% xi = .2;
-% delta = .007; 
-% eta = .03;% 
+% %Parameter values for fig 1bd Nontrivial
+phi_0 = .0001;
+psi_0 = .05;
+mu_0= .001;
+gamma_0 = .01; 
+nu_0 = .2; 
+rho_0 = .75; 
+xi_0 = .2;
+delta_0 = .007; 
+eta_0 = .03;% 
 
 
 
 %nondimensional conversion values 
-a = phi/(gamma*delta);
-b = psi/delta;
-c = nu/delta;
-d = (rho*gamma)/(mu*eta);
-f = xi * c;
-epsilon = eta/delta;
+a_0 = phi_0/(gamma_0*delta_0);
+b_0 = psi_0/delta_0;
+c_0 = nu_0/delta_0;
+d_0 = (rho_0*gamma_0)/(mu_0*eta_0);
+f_0 = xi_0 * c_0;
+epsilon_0 = eta_0/delta_0;
+
+
+%nondimensional conversion values 
+a_1 = phi_1/(gamma_1*delta_1);
+b_1 = psi_1/delta_1;
+c_1 = nu_1/delta_1;
+d_1 = (rho_1*gamma_1)/(mu_1*eta_1);
+f_1 = xi_1 * c_1;
+epsilon_1 = eta_1/delta_1;
+
 
 %domain 
-n=;
+n=10;
 domain = [0 n];
 
 %Initial conditions
-IC_N = .2/gamma;
-IC_A = .0001/gamma;
-IC_E = .001/mu;
+IC_N = .2/gamma_0;
+IC_A = .0002/gamma_0;
+IC_E = .002/mu_0;
+
 
 %initial condition vector 
 IC_fast = [IC_N IC_A];
-x = (f*(a*f-a-b))/(c*(f-1));
+IC_slow = IC_E;
 %scaled values
+
 %Solving QSS fast-model 
-[IVsol_fast, DVsol_fast] = ode23s(@(t, y) DEdef_fast(t, y, a,b,c,f,IC_E), domain, IC_fast);
-N_sol_fast = DVsol_fast(:, 1);
-A_sol_fast = DVsol_fast(:, 2);
-IVsol_fast = IVsol_fast;
+[IVsol_fast_triv, DVsol_fast_triv] = ode23s(@(t, y) DEdef_fast(t, y, a_0,b_0,c_0,f_0,IC_E), domain, IC_fast);
+N_sol_fast_triv = DVsol_fast_triv(:, 1);
+A_sol_fast_triv = DVsol_fast_triv(:, 2);
+
+opts = odeset('RelTol',1e-8,'AbsTol',1e-10,'MaxStep',1e-2, 'NonNegative',1);
+[IVsol_slow_triv, DVsol_slow_triv] = ode15s(@(t,y) DEdef_slow(t,y,a_0,b_0,c_0,f_0,d_0), domain, IC_E, opts);
+
+%Solving QSS fast-model 
+[IVsol_fast_non, DVsol_fast_non] = ode23s(@(t, y) DEdef_fast(t, y, a_1,b_1,c_1,f_1,IC_E), domain, IC_fast);
+N_sol_fast_non = DVsol_fast_non(:, 1);
+A_sol_fast_non = DVsol_fast_non(:, 2);
+
+opts = odeset('RelTol',1e-8,'AbsTol',1e-10,'MaxStep',1e-2, 'NonNegative',1);
+[IVsol_slow_non, DVsol_slow_non] = ode15s(@(t,y) DEdef_slow(t,y,a_1,b_1,c_1,f_1,d_1), domain, IC_E, opts);
 
 
+NP_0=a_0/b_0;
+AP_0=0;
+NP_1=1/(f_1-1);
+AP_1= f_1*(a_1*f_1-a_1-b_1)/(exp(IC_E)*c_1*(f_1-1));
+%Create a new figure
+
+%Trivial
 % Create a new figure
-fig = figure;
-set(fig, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
+figsfast_triv = figure;
+set(figsfast_triv, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
+hold on;
+
+% Plot nutrients on the left y-axis 
+yyaxis left;
+plot(IVsol_fast_triv, N_sol_fast_triv, 'color', nutrientcolordet, 'linewidth', 3);
+ylim([0, max(N_sol_fast_triv)*1.2]);
+ylabel('nutrients','FontSize',20,'Color','k','Interpreter','latex');
+set(gca, 'YColor', 'k'); % Set the left axis color to black
+
+% Plot algae and EPS on the right y-axis
+yyaxis right;
+plot(IVsol_fast_triv, A_sol_fast_triv, 'color', algaecolordet, 'linewidth', 3,'LineStyle','-');
+plot(IVsol_fast_triv, IC_E*ones(size(IVsol_fast_triv)), 'color', EPScolordet,'LineStyle', '--','linewidth', 3);
+ylim([0, max(max(IC_E), max(A_sol_fast_triv))*1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+ylabel('$\mathrm{algae\ \&\ EPS}$','FontSize',20,'Color','k','Interpreter','latex');
+
+% Set common properties
+xlim([0, n]);
+xlabel('time','FontSize',20,'Color','k');
+%Add legend
+legend('nutrients', 'algae','EPS', 'Location', 'northeast');
+hold off
+set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
+
+figslow_triv = figure;
+set(figslow_triv, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
 hold on;
 
 % Plot nutrients on the left y-axis
 yyaxis left;
-plot(IVsol_fast, N_sol_fast, 'color', nutrientcolordet, 'linewidth', 4);
-ylim([0, max(N_sol_fast) * 1.2]);
-ylabel('nutrients','Color','k');
-set(gca, 'fontsize', 18, 'XColor', 'k', 'YColor', 'k'); % Set axis tick label colors to black
+plot(IVsol_slow_triv, NP_1*ones(size(IVsol_slow_triv)), 'color', nutrientcolordet, 'LineStyle', '--', 'linewidth', 3);
+ylim([0, max(NP_1)*1.2]);
+ylabel('nutrients','FontSize',20,'Color','k','Interpreter','latex');
+set(gca, 'YColor', 'k'); % Set the left axis color to black
 
-% Plot algae on the right y-axis
+% Plot algae and EPS on the right y-axis
 yyaxis right;
-plot(IVsol_fast, A_sol_fast, 'color', algaecolordet, 'linewidth', 4);
-ylabel('algae','Color','k');
-set(gca, 'fontsize', 18, 'XColor', 'k', 'YColor', 'k'); % Set axis tick label colors to black
+plot(IVsol_slow_triv, AP_1*ones(size(IVsol_slow_triv)), 'color', algaecolordet, 'LineStyle', '--', 'linewidth', 3);
+plot(IVsol_slow_triv, DVsol_slow_triv, 'color', EPScolordet,'LineStyle', '-', 'linewidth', 3);
+ylim([0, max(max(IC_E), max(A_sol_fast_triv))*1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+ylabel('$\mathrm{algae\ \&\ EPS}$','FontSize',20,'Color','k','Interpreter','latex');
 
 % Set common properties
 xlim([0, n]);
-xlabel('time');
-set(gca, 'fontsize', 18, 'XColor', 'k', 'YColor', 'k'); % Set axis tick label colors to black
+xlabel('time','FontSize',20,'Color','k');
+%Add legend
+legend('nutrients', 'algae','EPS', 'Location', 'northeast');
+legend boxoff; % Hide the legend's axes (border and background)=
+hold off
+set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
 
 
-% Add legend
-legend('Nutrients', 'Algae', 'Location', 'northeast','Box','off');
+%Trivial
+% Create a new figure
+figsfast_non = figure;
+set(figsfast_non, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
+hold on;
+
+% Plot nutrients on the left y-axis 
+yyaxis left;
+plot(IVsol_fast_non, N_sol_fast_non, 'color', nutrientcolordet, 'linewidth', 3);
+ylim([0, max(N_sol_fast_non)]);
+ylabel('$\mathrm{nutrients\ \&\ algae}$','FontSize',20,'Color','k','Interpreter','latex');
+set(gca, 'YColor', 'k'); % Set the left axis color to black
+
+% Plot algae and EPS on the right y-axis
+yyaxis right;
+plot(IVsol_fast_non, A_sol_fast_non, 'color', algaecolordet, 'linewidth', 3,'LineStyle','-');
+plot(IVsol_fast_non, IC_E*ones(size(IVsol_fast_non)), 'color', EPScolordet,'LineStyle', '--','linewidth', 3);
+ylim([0, max(max(IC_E), max(A_sol_fast_non))*1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+ylabel('$\mathrm{algae\ \&\ EPS}$','FontSize',20,'Color','k','Interpreter','latex');
 
 
-hold off;
-% Set the figure size and save as PDF, PNG, and FIG
-set(gcf, 'units', 'inches', 'Position', [2, 2, 6, 4]);
-set(gcf, 'PaperSize', [10, 6]); % Set the paper to have width 6 and height 4
-fname = 'fig1a';
-nice_graphing(fname, fig)
+% Set common properties
+xlim([0, n]);
+xlabel('time','FontSize',20,'Color','k');
+%Add legend
+legend('nutrients', 'algae','EPS', 'Location', 'northeast');
+hold off
+set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
+
+figslow_non = figure;
+set(figslow_non, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
+hold on;
+
+% Plot nutrients on the left y-axis
+yyaxis left;
+plot(IVsol_slow_non, NP_1*ones(size(IVsol_slow_non)), 'color', nutrientcolordet, 'LineStyle', '--', 'linewidth', 3);
+ylim([0, max(IVsol_slow_non)]);
+ylabel('$\mathrm{nutrients\ \&\ algae}$','FontSize',20,'Color','k','Interpreter','latex');
+set(gca, 'YColor', 'k'); % Set the left axis color to black
+
+% Plot algae and EPS on the right y-axis
+yyaxis right;
+plot(IVsol_slow_non, AP_1*ones(size(IVsol_slow_non)), 'color', algaecolordet, 'LineStyle', '--', 'linewidth', 3);
+plot(IVsol_slow_non, DVsol_slow_non, 'color', EPScolordet,'LineStyle', '-', 'linewidth', 3);
+ylim([0, max(max(IC_E), max(A_sol_fast_non))*1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+ylabel('$\mathrm{algae\ \&\ EPS}$','FontSize',20,'Color','k','Interpreter','latex');
+
+
+% Set common properties
+xlim([0, n]);
+xlabel('time','FontSize',20,'Color','k');
+% %Add legend
+legend('nutrients', 'algae','EPS', 'Location', 'northeast');
+hold off
+set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
+
+fname1 = 'fig1a';
+fname2 = 'fic1b';
+fname3= 'fig1c';
+fname4 = 'fig1d';
+nice_graphing(fname1,figsfast_triv)
+nice_graphing(fname2,figsfast_non)
+nice_graphing(fname3,figslow_triv)
+nice_graphing(fname4,figslow_non)
+
+
+
 
 function nice_graphing(fname, fig)
 picturewidth = 20; % set this parameter and keep it forever
@@ -109,16 +226,31 @@ set(findall(fig,'-property','TickLabelInterpreter'),'TickLabelInterpreter','late
 set(fig,'Units','centimeters','Position',[3 3 picturewidth hw_ratio*picturewidth])
 pos = get(fig,'Position');
 set(fig,'PaperPositionMode','Auto','PaperUnits','centimeters','PaperSize',[pos(3), pos(4)])
-lgd = findall(fig, 'Type', 'Legend');
-set(lgd, 'Box', 'off');     % ensure no border if a legend exists
+ lgd = findall(fig, 'Type', 'Legend');
+    set(lgd, 'Box', 'off');     % ensure no border if a legend exists
 %print(hfig,fname,'-dpdf','-painters','-fillpage')
 %print(hfig,fname,'-dpng','-painters')
 %set(hfig, 'Position', get(0, 'Screensize'));
-exportgraphics(fig, strcat(fname,'.png'), 'ContentType', 'vector');
+exportgraphics(fig, strcat(fname,'.png'), 'Resolution', 300);
 exportgraphics(fig, strcat(fname,'.pdf'), 'ContentType', 'vector');
-saveas(fig,strcat(fname,'.fig'))
-
+saveas(fig, strcat(fname,'.fig'));
 end
+% 
+% exportgraphics(figsfast_triv, strcat(fname1,'.png'), 'Resolution', 300);
+% exportgraphics(figsfast_triv, strcat(fname1,'.pdf'), 'ContentType', 'vector');
+% saveas(figsfast_triv, strcat(fname1,'.fig'));
+% 
+% exportgraphics(figsfast_non, strcat(fname2,'.png'), 'Resolution', 300);
+% exportgraphics(figsfast_non, strcat(fname2,'.pdf'), 'ContentType', 'vector');
+% saveas(figsfast_non, strcat(fname2,'.fig'));
+% 
+% exportgraphics(figslow_triv, strcat(fname3,'.png'), 'Resolution', 300);
+% exportgraphics(figslow_triv, strcat(fname3,'.pdf'), 'ContentType', 'vector');
+% saveas(figslow_triv, strcat(fname3,'.fig'));
+% 
+% exportgraphics(figslow_non, strcat(fname4,'.png'), 'Resolution', 300);
+% exportgraphics(figslow_non, strcat(fname4,'.pdf'), 'ContentType', 'vector');
+% saveas(figslow_non, strcat(fname4,'.fig'));
 
 %Defining QSS-NA-model
 function [Dode] = DEdef_fast(I,D,a,b,c,f,E_0)
@@ -136,4 +268,11 @@ dAdt = (f*N*A)/(N+1)-A;
 
 % odes in vector form
 Dode = [dNdt; dAdt];
+end
+
+%Defining the dEdt ODE
+function [dEdt] = DEdef_slow(~,E,a,b,c,f,d)
+
+%set of odes
+dEdt = (d*f*(a*f-a-b))/(exp(E)*c*(f-1))-E;
 end
