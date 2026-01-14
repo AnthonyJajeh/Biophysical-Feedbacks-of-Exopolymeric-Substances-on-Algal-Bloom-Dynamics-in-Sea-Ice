@@ -58,12 +58,14 @@ epsilon_1 = eta_1/delta_1;
 n=10;
 domain = [0 n];
 
-%Initial conditions
+% %Initial conditions
+% IC_N = .2/gamma_0;
+% IC_A = .0002/gamma_0;
+% IC_E = .002/mu_0;
+
 IC_N = .2/gamma_0;
-IC_A = .0002/gamma_0;
+IC_A = .00002/gamma_0;
 IC_E = .002/mu_0;
-
-
 %initial condition vector 
 IC_fast = [IC_N IC_A];
 IC_slow = IC_E;
@@ -94,6 +96,7 @@ AP_1= f_1*(a_1*f_1-a_1-b_1)/(exp(IC_E)*c_1*(f_1-1));
 
 %Trivial
 % Create a new figure
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 figsfast_triv = figure;
 set(figsfast_triv, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
 hold on;
@@ -119,25 +122,40 @@ xlabel('time','FontSize',20,'Color','k');
 legend('nutrients', 'algae','EPS', 'Location', 'northeast');
 hold off
 set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
-
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 figslow_triv = figure;
 set(figslow_triv, 'defaultAxesColorOrder', [0 0 0; 0 0 0]);
 hold on;
 
 % Plot nutrients on the left y-axis
 yyaxis left;
-plot(IVsol_slow_triv, NP_1*ones(size(IVsol_slow_triv)), 'color', nutrientcolordet, 'LineStyle', '--', 'linewidth', 3);
-ylim([0, max(NP_1)*1.2]);
+plot(IVsol_slow_triv, NP_0*ones(size(IVsol_slow_triv)), 'color', nutrientcolordet, 'LineStyle', '--', 'linewidth', 3);
+ylim([0, max(NP_0)*1.2]);
 ylabel('nutrients','FontSize',20,'Color','k','Interpreter','latex');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
 % Plot algae and EPS on the right y-axis
 yyaxis right;
-plot(IVsol_slow_triv, AP_1*ones(size(IVsol_slow_triv)), 'color', algaecolordet, 'LineStyle', '--', 'linewidth', 3);
-plot(IVsol_slow_triv, DVsol_slow_triv, 'color', EPScolordet,'LineStyle', '-', 'linewidth', 3);
-ylim([0, max(max(IC_E), max(A_sol_fast_triv))*1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+% Your original plot order (keep it)
+h_alg = plot(IVsol_slow_triv, AP_0*ones(size(IVsol_slow_triv)), ...
+    'Color', algaecolordet, 'LineStyle', '--', 'LineWidth', 3);
+hold on
+h_eps = plot(IVsol_slow_triv, DVsol_slow_triv, ...
+    'Color', EPScolordet, 'LineStyle', '-', 'LineWidth', 3);
+
+% Re-plot algae ON TOP, but hide from legend
+h_alg_top = plot(IVsol_slow_triv, AP_0*ones(size(IVsol_slow_triv)), ...
+    'Color', algaecolordet, 'LineStyle', '--', 'LineWidth', 3);
+
+% Hide the top copy from legend (two robust ways; either is fine)
+h_alg_top.HandleVisibility = 'off';
+% OR:
+% h_alg_top.Annotation.LegendInformation.IconDisplayStyle = 'off';
+
+ylim([0, max(DVsol_slow_triv)*1.2]);
 ylabel('$\mathrm{algae\ \&\ EPS}$','FontSize',20,'Color','k','Interpreter','latex');
 
+hold off
 % Set common properties
 xlim([0, n]);
 xlabel('time','FontSize',20,'Color','k');
@@ -157,8 +175,8 @@ hold on;
 % Plot nutrients on the left y-axis 
 yyaxis left;
 plot(IVsol_fast_non, N_sol_fast_non, 'color', nutrientcolordet, 'linewidth', 3);
-ylim([0, max(N_sol_fast_non)]);
-ylabel('$\mathrm{nutrients\ \&\ algae}$','FontSize',20,'Color','k','Interpreter','latex');
+ylim([0, max(N_sol_fast_non)*1.2]);
+ylabel('nutrients','FontSize',20,'Color','k','Interpreter','latex');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
 % Plot algae and EPS on the right y-axis
@@ -184,8 +202,8 @@ hold on;
 % Plot nutrients on the left y-axis
 yyaxis left;
 plot(IVsol_slow_non, NP_1*ones(size(IVsol_slow_non)), 'color', nutrientcolordet, 'LineStyle', '--', 'linewidth', 3);
-ylim([0, max(IVsol_slow_non)]);
-ylabel('$\mathrm{nutrients\ \&\ algae}$','FontSize',20,'Color','k','Interpreter','latex');
+ylim([0, max(IVsol_slow_non)*1.2]);
+ylabel('nutrients','FontSize',20,'Color','k','Interpreter','latex');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
 % Plot algae and EPS on the right y-axis
@@ -205,7 +223,7 @@ hold off
 set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
 
 fname1 = 'fig1a';
-fname2 = 'fic1b';
+fname2 = 'fig1b';
 fname3= 'fig1c';
 fname4 = 'fig1d';
 nice_graphing(fname1,figsfast_triv)

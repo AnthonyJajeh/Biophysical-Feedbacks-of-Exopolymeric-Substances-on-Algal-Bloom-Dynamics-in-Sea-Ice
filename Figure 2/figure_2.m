@@ -85,7 +85,7 @@ hold on;
 % Plot nutrients on the left y-axis 
 yyaxis left;
 plot(IVsol_trace_triv, N_sol_trace_triv, 'color', nutrientcolordet, 'linewidth', 3);
-ylim([0, max(N_sol_trace_triv)*1.1]);
+ylim([0, max(N_sol_trace_triv)*1.2]);
 ylabel('nutrients','FontSize',20,'Color','k','Interpreter','latex');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
@@ -93,7 +93,7 @@ set(gca, 'YColor', 'k'); % Set the left axis color to black
 yyaxis right;
 plot(IVsol_trace_triv, A_sol_trace_triv, 'color', algaecolordet, 'linewidth', 3,'LineStyle','-');
 plot(IVsol_trace_triv,h_0*A_sol_trace_triv, 'color', EPScolordet,'LineStyle', '-','linewidth', 3);
-ylim([0, max(h_0*A_sol_trace_triv)*1.1]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+ylim([0, max(h_0*A_sol_trace_triv)*1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
 ylabel('$\mathrm{algae\ \&\ EPS}$','FontSize',20,'Color','k','Interpreter','latex');
 
 % Set common properties
@@ -111,7 +111,7 @@ hold on;
 % Plot nutrients on the left y-axis 
 yyaxis left;
 plot(IVsol_trace_non, N_sol_trace_non, 'color', nutrientcolordet, 'linewidth', 3);
-ylim([0, max(N_sol_trace_non)*1.1]);
+ylim([0, max(N_sol_trace_non)*1.2]);
 ylabel('nutrients','FontSize',20,'Color','k','Interpreter','latex');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
@@ -119,7 +119,7 @@ set(gca, 'YColor', 'k'); % Set the left axis color to black
 yyaxis right;
 plot(IVsol_trace_non, A_sol_trace_non, 'color', algaecolordet, 'linewidth', 3,'LineStyle','-');
 plot(IVsol_trace_non,h_1*A_sol_trace_non, 'color', EPScolordet,'LineStyle', '-','linewidth', 3);
-ylim([0, max(h_1*A_sol_trace_non)*1.1]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+ylim([0, max(h_1*A_sol_trace_non)*1.2]); % Ensures that the y-axis accommodates the largest value of algae or EPS
 ylabel('$\mathrm{algae\ \&\ EPS}$','FontSize',20,'Color','k','Interpreter','latex');
 
 % Set common properties

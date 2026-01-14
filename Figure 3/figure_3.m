@@ -70,8 +70,8 @@ epsilon_2 = eta_2/delta_2;
 domain = [0 n];
 %Initial conditions
 IC_N = .2/gamma_0;
-IC_A = .0001/gamma_0;
-IC_E = .001/mu_0;
+IC_A = .0002/gamma_0;
+IC_E = .002/mu_0;
 
 IC_exp = [IC_N IC_A IC_E];
 %calculating NAE-model solution plots a
@@ -104,7 +104,7 @@ hold on;
 % Plot nutrients on the left y-axis
 yyaxis left;
 plot(IVsol_exp_triv, N_sol_exp_triv, 'color', nutrientcolordet, 'linewidth', 3);
-ylim([0, max(N_sol_exp_triv)*1.1]);
+ylim([0, .5]);
 ylabel('nutrients','FontSize',20,'Color','k');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
@@ -112,7 +112,7 @@ set(gca, 'YColor', 'k'); % Set the left axis color to black
 yyaxis right;
 plot(IVsol_exp_triv, A_sol_exp_triv, 'color', algaecolordet, 'linewidth', 3,'LineStyle','-');
 plot(IVsol_exp_triv, E_sol_exp_triv, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
-ylim([0,max(max(E_sol_exp_triv), max(A_sol_exp_triv))*1.1]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+ylim([0,1]); % Ensures that the y-axis accommodates the largest value of algae or EPS
 ylabel('$\mathrm{algae\ \&\ EPS}$','FontSize',20,'Color','k','Interpreter','latex');
 
 
@@ -131,7 +131,7 @@ hold on;
 % Plot nutrients on the left y-axis
 yyaxis left;
 plot(IVsol_exp_sp, N_sol_exp_sp, 'color', nutrientcolordet, 'linewidth', 3);
-ylim([0, max(N_sol_exp_sp)*1.1]);
+ylim([0, 1]);
 ylabel('nutrients','FontSize',20,'Color','k');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
@@ -139,7 +139,7 @@ set(gca, 'YColor', 'k'); % Set the left axis color to black
 yyaxis right;
 plot(IVsol_exp_sp, A_sol_exp_sp, 'color', algaecolordet, 'linewidth', 3,'LineStyle','-');
 plot(IVsol_exp_sp, E_sol_exp_sp, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
-ylim([0,max(max(E_sol_exp_sp), max(A_sol_exp_sp))*1.1]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+ylim([0,6]); % Ensures that the y-axis accommodates the largest value of algae or EPS
 ylabel('$\mathrm{algae\ \&\ EPS}$','FontSize',20,'Color','k','Interpreter','latex');
 
 
@@ -158,7 +158,7 @@ hold on;
 % Plot nutrients on the left y-axis
 yyaxis left;
 plot(IVsol_exp_hopf, N_sol_exp_hopf, 'color', nutrientcolordet, 'linewidth', 3);
-ylim([0, max(N_sol_exp_hopf)*1.1]);
+ylim([0, 1]);
 ylabel('nutrients','FontSize',20,'Color','k');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
@@ -166,7 +166,7 @@ set(gca, 'YColor', 'k'); % Set the left axis color to black
 yyaxis right;
 plot(IVsol_exp_hopf, A_sol_exp_hopf, 'color', algaecolordet, 'linewidth', 3,'LineStyle','-');
 plot(IVsol_exp_hopf, E_sol_exp_hopf, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
-ylim([0,max(max(E_sol_exp_hopf), max(A_sol_exp_hopf))*1.1]); % Ensures that the y-axis accommodates the largest value of algae or EPS
+ylim([0,18]); % Ensures that the y-axis accommodates the largest value of algae or EPS
 ylabel('$\mathrm{algae\ \&\ EPS}$','FontSize',20,'Color','k','Interpreter','latex');
 
 
@@ -196,8 +196,8 @@ set(findall(fig,'-property','Interpreter'),'Interpreter','latex')
 set(findall(fig,'-property','TickLabelInterpreter'),'TickLabelInterpreter','latex')
 set(fig,'Units','centimeters','Position',[3 3 picturewidth hw_ratio*picturewidth])
 pos = get(fig,'Position');
-%lgd = findall(fig, 'Type', 'Legend');
-%set(lgd, 'Box', 'off');     % ensure no border if a legend exists
+lgd = findall(fig, 'Type', 'Legend');
+set(lgd, 'Box', 'off');     % ensure no border if a legend exists
 set(fig,'PaperPositionMode','Auto','PaperUnits','centimeters','PaperSize',[pos(3), pos(4)])
 %print(hfig,fname,'-dpdf','-painters','-fillpage')
 %print(hfig,fname,'-dpng','-painters')
