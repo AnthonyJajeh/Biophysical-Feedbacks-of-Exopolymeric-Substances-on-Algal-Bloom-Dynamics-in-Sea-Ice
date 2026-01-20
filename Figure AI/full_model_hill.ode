@@ -1,0 +1,19 @@
+#Author: Anthony Jajeh 
+#Date: Aug 25, 2025
+#Hill functional form of full model for use of xpp
+
+params P=5 alpha = 4 c = 28.57 b = 1.4 f = 5.71 d=250 epsilon = 4.29
+
+A' = (f*(N*A)/(1+N)-A)/epsilon
+N' =(alpha/(1+E)^P-(c*N*A)/(1+N)-(b*N)/(1+E)^P)/epsilon
+E' = d*A-E
+
+init A=.1, N=20, E=800
+@ bound=10000
+@ TOTAL=100,DT=.05,xlo=0,xhi=.05,ylo=-.01,yhi=.4
+@ xplot=N,yplot=A
+@meth=cvode
+@ dsmin=.01,dsmax=0.02,parmin=0,parmax=30,autoxmin=0,autoxmax=30
+@ colormap=5
+@ autoymax=.05,autoymin=0
+Done
