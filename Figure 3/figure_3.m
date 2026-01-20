@@ -11,7 +11,7 @@ EPScolordet = 1/255*[125,91,166]; % color for EPS
 % 
 %Parameter values for fig 3a
 phi_0 = .0001;
-psi_0 = .1;
+psi_0 = .05;
 mu_0 = .001;
 gamma_0 = .01; 
 nu_0 = .2; 
@@ -23,7 +23,7 @@ eta_0 = .03;
 
 %Parameter values for fig 3b
 phi_1 = .0001;
-psi_1 = .01;
+psi_1 = .001;
 mu_1 = .001;
 gamma_1 = .01; 
 nu_1 = .2; 

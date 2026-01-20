@@ -11,19 +11,8 @@ algaecolordet = 1/255*[118,176,65]; % color for algae (green)
 nutrientcolordet = 1/255*[255,201,20]; % color for nutrients (yellow)\
 EPScolordet = 1/255*[125,91,166]; % color for EPS 
 
-%Parameter values for fig 1ac Trivial
- phi_1 = .01;
- psi_1 = .01;
- mu_1 = .001;
- gamma_1 = .01; 
- nu_1 = .2; 
- rho_1 = .75; 
- xi_1 = .2;
- delta_1 = .007; 
- eta_1 = .03;
 
-
-% %Parameter values for fig 1bd Nontrivial
+% %Parameter values for fig 1ac trivial
 phi_0 = .0001;
 psi_0 = .05;
 mu_0= .001;
@@ -34,6 +23,16 @@ xi_0 = .2;
 delta_0 = .007; 
 eta_0 = .03;% 
 
+%Parameter values for fig 1bc nontrivial
+ phi_1 = .01;
+ psi_1 = .01;
+ mu_1 = .001;
+ gamma_1 = .01; 
+ nu_1 = .2; 
+ rho_1 = .75; 
+ xi_1 = .2;
+ delta_1 = .007; 
+ eta_1 = .03;
 
 
 %nondimensional conversion values 
@@ -58,14 +57,13 @@ epsilon_1 = eta_1/delta_1;
 n=10;
 domain = [0 n];
 
-% %Initial conditions
-% IC_N = .2/gamma_0;
-% IC_A = .0002/gamma_0;
-% IC_E = .002/mu_0;
-
+%Initial conditions
 IC_N = .2/gamma_0;
-IC_A = .00002/gamma_0;
+IC_A = .0002/gamma_0;
 IC_E = .002/mu_0;
+
+
+
 %initial condition vector 
 IC_fast = [IC_N IC_A];
 IC_slow = IC_E;
@@ -77,7 +75,7 @@ N_sol_fast_triv = DVsol_fast_triv(:, 1);
 A_sol_fast_triv = DVsol_fast_triv(:, 2);
 
 opts = odeset('RelTol',1e-8,'AbsTol',1e-10,'MaxStep',1e-2, 'NonNegative',1);
-[IVsol_slow_triv, DVsol_slow_triv] = ode15s(@(t,y) DEdef_slow(t,y,a_0,b_0,c_0,f_0,d_0), domain, IC_E, opts);
+[IVsol_slow_triv, DVsol_slow_triv] = ode15s(@(t,y) DEdef_E(t,y), domain, IC_E, opts);
 
 %Solving QSS fast-model 
 [IVsol_fast_non, DVsol_fast_non] = ode23s(@(t, y) DEdef_fast(t, y, a_1,b_1,c_1,f_1,IC_E), domain, IC_fast);
@@ -191,7 +189,7 @@ ylabel('$\mathrm{algae\ \&\ EPS}$','FontSize',20,'Color','k','Interpreter','late
 xlim([0, n]);
 xlabel('time','FontSize',20,'Color','k');
 %Add legend
-legend('nutrients', 'algae','EPS', 'Location', 'northeast');
+%legend('nutrients', 'algae','EPS', 'Location', 'northeast');
 hold off
 set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
 
@@ -218,7 +216,7 @@ ylabel('$\mathrm{algae\ \&\ EPS}$','FontSize',20,'Color','k','Interpreter','late
 xlim([0, n]);
 xlabel('time','FontSize',20,'Color','k');
 % %Add legend
-legend('nutrients', 'algae','EPS', 'Location', 'northeast');
+%legend('nutrients', 'algae','EPS', 'Location', 'northeast');
 hold off
 set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
 
@@ -294,3 +292,22 @@ function [dEdt] = DEdef_slow(~,E,a,b,c,f,d)
 %set of odes
 dEdt = (d*f*(a*f-a-b))/(exp(E)*c*(f-1))-E;
 end
+% %THIS IS SUPPOSEED TO BE EXPONENTIAL DECAY FOR TRIVIAL SOLN
+% function [dEdt] = DEdef_slow(~,E,a,b,c,f,d)
+% 
+% %set of odes
+% dEdt = (d*f*(a*f-a-b))/(exp(E)*c*(f-1))-E;
+% end
+
+%Defining the dEdt ODE
+function [dEdt] = DEdef_E(~,E)
+
+%set of odes
+dEdt = -E;
+end
+% %THIS IS SUPPOSEED TO BE EXPONENTIAL DECAY FOR TRIVIAL SOLN
+% function [dEdt] = DEdef_slow(~,E,a,b,c,f,d)
+% 
+% %set of odes
+% dEdt = (d*f*(a*f-a-b))/(exp(E)*c*(f-1))-E;
+% end

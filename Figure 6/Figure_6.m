@@ -24,11 +24,18 @@ xi = .2;
 delta = .007; 
 eta = .03;
 
-
+% 
 %Initial conditions
-IC_N = .1;
-IC_A = .02;
-IC_E = .2;
+IC_N = .2;
+IC_A = .0002;
+IC_E = .002;
+
+
+% 
+% %Initial conditions
+% IC_N = .18;
+% IC_A = .005;
+% IC_E = .07;
 
 
 IC_exp = [IC_N IC_A IC_E];

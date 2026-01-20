@@ -87,17 +87,17 @@ hold on;
 % Plot nutrients on the left y-axis
 yyaxis left;
 plot(rho_vec, N_max, 'color', nutrientcolordet, 'linewidth', 3);
-plot(rho_vec, A_max, 'color', algaecolordet, 'linewidth', 3,'LineStyle','-');
-ylim([min([min(N_max);min(A_max)]*.98), max([max(N_max); max(A_max)]) * 1.3]);
-ylabel('max nutrients \& algae','FontSize',17,'Color','k');
+ylim([min(N_max)*.98, max(N_max) * 1.3]);
+ylabel('max nutrients','FontSize',17,'Color','k');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
 % Plot algae and EPS on the right y-axis
 yyaxis right;
 hold on;
-plot(rho_vec, E_max, 'color', EPScolordet, 'linewidth', 3);
-ylim([min(E_max)*.98,  max(E_max)*1.2 ]); % Ensures that the y-axis accommodates the largest value of algae or EPS
-ylabel('max EPS','FontSize',17,'Color','k');
+plot(rho_vec, A_max, 'color', algaecolordet, 'linewidth', 3,'LineStyle','-');
+plot(rho_vec, E_max, 'color', EPScolordet, 'linewidth', 3,'LineStyle','-');
+ylim([min([min(E_max); min(A_max)]*.98), max([max(E_max); max(A_max)]) * 1.3]);
+ylabel('max algae \& EPS','FontSize',17,'Color','k');
 
 xlabel('$\rho$', 'FontSize', 20);
 xlim([min(rho_vec),max(rho_vec)])
@@ -110,7 +110,7 @@ set(gca, 'YColor', 'k'); % <-- Apply black color to right y-axis
 
 %Defining NAE-model
 
-fname = 'fig7rho';
+fname = 'fig5rho';
 nice_graphing(fname, figp)
 
 function nice_graphing(fname, fig)

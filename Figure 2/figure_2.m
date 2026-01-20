@@ -126,7 +126,7 @@ ylabel('$\mathrm{algae\ \&\ EPS}$','FontSize',20,'Color','k','Interpreter','late
 xlim([0, n]);
 xlabel('time','FontSize',20,'Color','k');
 %Add legend
-legend('nutrients', 'algae','EPS', 'Location', 'northeast');
+%legend('nutrients', 'algae','EPS', 'Location', 'northeast');
 hold off
 set(gca, 'fontsize', 20, 'XColor', 'k', 'YColor', 'k'); % Set axis text and tick colors
 
