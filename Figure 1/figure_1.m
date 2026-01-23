@@ -102,7 +102,7 @@ hold on;
 % Plot nutrients on the left y-axis 
 yyaxis left;
 plot(IVsol_fast_triv, N_sol_fast_triv, 'color', nutrientcolordet, 'linewidth', 3);
-ylim([0, max(N_sol_fast_triv)*1.2]);
+ylim([0, max(N_sol_fast_triv)*1.1]);
 ylabel('nutrients','FontSize',20,'Color','k','Interpreter','latex');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
@@ -128,7 +128,7 @@ hold on;
 % Plot nutrients on the left y-axis
 yyaxis left;
 plot(IVsol_slow_triv, NP_0*ones(size(IVsol_slow_triv)), 'color', nutrientcolordet, 'LineStyle', '--', 'linewidth', 3);
-ylim([0, max(NP_0)*1.2]);
+ylim([0, max(NP_0)*1.1]);
 ylabel('nutrients','FontSize',20,'Color','k','Interpreter','latex');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
@@ -173,7 +173,7 @@ hold on;
 % Plot nutrients on the left y-axis 
 yyaxis left;
 plot(IVsol_fast_non, N_sol_fast_non, 'color', nutrientcolordet, 'linewidth', 3);
-ylim([0, max(N_sol_fast_non)*1.2]);
+ylim([0, max(N_sol_fast_non)*1.1]);
 ylabel('nutrients','FontSize',20,'Color','k','Interpreter','latex');
 set(gca, 'YColor', 'k'); % Set the left axis color to black
 
