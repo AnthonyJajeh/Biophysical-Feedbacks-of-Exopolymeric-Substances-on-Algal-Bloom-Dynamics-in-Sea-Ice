@@ -70,7 +70,7 @@ IC_slow = IC_E;
 %scaled values
 
 %Solving QSS fast-model 
-[IVsol_fast_triv, DVsol_fast_triv] = ode23s(@(t, y) DEdef_fast(t, y, a_0,b_0,c_0,f_0,IC_E), domain, IC_fast);
+[IVsol_fast_triv, DVsol_fast_triv] = ode45(@(t, y) DEdef_fast(t, y, a_0,b_0,c_0,f_0,IC_E), domain, IC_fast);
 N_sol_fast_triv = DVsol_fast_triv(:, 1);
 A_sol_fast_triv = DVsol_fast_triv(:, 2);
 
@@ -78,7 +78,7 @@ opts = odeset('RelTol',1e-8,'AbsTol',1e-10,'MaxStep',1e-2, 'NonNegative',1);
 [IVsol_slow_triv, DVsol_slow_triv] = ode15s(@(t,y) DEdef_E(t,y), domain, IC_E, opts);
 
 %Solving QSS fast-model 
-[IVsol_fast_non, DVsol_fast_non] = ode23s(@(t, y) DEdef_fast(t, y, a_1,b_1,c_1,f_1,IC_E), domain, IC_fast);
+[IVsol_fast_non, DVsol_fast_non] = ode45(@(t, y) DEdef_fast(t, y, a_1,b_1,c_1,f_1,IC_E), domain, IC_fast);
 N_sol_fast_non = DVsol_fast_non(:, 1);
 A_sol_fast_non = DVsol_fast_non(:, 2);
 
