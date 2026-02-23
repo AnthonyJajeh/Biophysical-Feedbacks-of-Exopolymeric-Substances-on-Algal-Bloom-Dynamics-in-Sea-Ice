@@ -51,16 +51,16 @@ exportgraphics(fig, strcat(fname,'.pdf'), 'ContentType', 'vector');
 saveas(fig, strcat(fname,'.fig'));
 end
 
-exportgraphics(fig1, strcat('fig4a','.png'), 'Resolution', 300);
-exportgraphics(fig1, strcat('fig4a','.pdf'), 'ContentType', 'vector');
-saveas(fig1, strcat('fig4a','.fig'));
-
-
-exportgraphics(fig2, strcat('fig4b','.png'), 'Resolution', 300);
-exportgraphics(fig2, strcat('fig4b','.pdf'), 'ContentType', 'vector');
-saveas(fig2, strcat('fig4b','.fig'));
-
-
-exportgraphics(fig3, strcat('fig4c','.png'), 'Resolution', 300);
-exportgraphics(fig3, strcat('fig4c','.pdf'), 'ContentType', 'vector');
-saveas(fig3, strcat('fig4c','.fig'));
+% exportgraphics(fig1, strcat('fig4a','.png'), 'Resolution', 300);
+% exportgraphics(fig1, strcat('fig4a','.pdf'), 'ContentType', 'vector');
+% saveas(fig1, strcat('fig4a','.fig'));
+% 
+% 
+% exportgraphics(fig2, strcat('fig4b','.png'), 'Resolution', 300);
+% exportgraphics(fig2, strcat('fig4b','.pdf'), 'ContentType', 'vector');
+% saveas(fig2, strcat('fig4b','.fig'));
+% 
+% 
+% exportgraphics(fig3, strcat('fig4c','.png'), 'Resolution', 300);
+% exportgraphics(fig3, strcat('fig4c','.pdf'), 'ContentType', 'vector');
+% saveas(fig3, strcat('fig4c','.fig'));
